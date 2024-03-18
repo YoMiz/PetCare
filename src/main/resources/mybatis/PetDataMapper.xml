@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.app.mapper.PetDataMapper">
+	<select id="showPets" resultType="com.example.app.domain.PetData">
+	SELECT * FROM pet_care_db.pet_data
+	</select>
+	<select id="showPet" resultType="com.example.app.domain.PetData">
+	SELECT * FROM pet_care_db.pet_data WHERE pet_id = 1
+	</select>
+</mapper>

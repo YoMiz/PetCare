@@ -1,0 +1,40 @@
+@charset "UTF-8";
+/* カルーセルの外枠 */
+.carousel {
+  width: 320px;
+  height: 120px;
+  display: flex;    /* 子要素を横に並べる */
+  overflow: hidden; /* はみ出た部分は表示しない */
+  margin: 0 auto;   /* 水平方向中央寄せ */
+}
+/* カルーセル内の画像 */
+.carousel img {
+  margin: 0;
+  padding: 0;
+  display: block; /* imgタグの改行のすき間を消すため */
+}
+/* スクロールアニメーションのキーフレーム */
+@keyframes scroll {
+  /* 初期位置は1個目の画像が左端 */
+  0% { margin-left: 0; }      
+  /* 1個分左の位置に進めて2個目の画像を左端にする */
+  20% { margin-left: -100%; }
+  /* 少しの間上と同じ位置 */  
+  25% { margin-left: -100%; }
+  /* 2個分左の位置に進めて3個目の画像を左端にする */
+  45% { margin-left: -200%; }
+  /* 少しの間上と同じ位置 */  
+  50% { margin-left: -200%; }
+  /* 以降は上と同様に繰り返し */
+  70% { margin-left: -300%; }
+  75% { margin-left: -300%; }
+  95% { margin-left: -400%; }
+  100% { margin-left: -400%; }
+}
+/* カルーセルの子要素にスクロールアニメーションを設定 */
+.carousel > :first-child {
+  animation-name: scroll;    /* キーフレーム名 */
+  animation-duration: 20s;  /* 再生時間全体は20秒 */
+  animation-delay: 0s;      /* 読込直後から遅延無しで開始 */
+  animation-iteration-count: infinite;  /* 無限に繰り返す */
+}

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+</head>
+
+<body>
+	<div id="sidebar-menu">
+		<button id="openbtn-pet" class="openbtn" onclick="openNav('pet')">ペットメニュー</button>
+		<div id="sidebar-pet" class="sidebar">
+			<button class="closebtn" onclick="closeNav('pet')">X</button>
+			<h4>ペットメニュー</h4>
+		</div>
+
+		<button id="openbtn-inventory" class="openbtn" onclick="openNav('inventory')">在庫メニュー</button>
+		<div id="sidebar-inventory" class="sidebar">
+			<button class="closebtn" onclick="closeNav('inventory')">X</button>
+			<h4>在庫メニュー</h4>
+		</div>
+
+		<button id="openbtn-contact" class="openbtn" onclick="openNav('contact')">連絡メニュー</button>
+		<div id="sidebar-contact" class="sidebar">
+			<button class="closebtn" onclick="closeNav('contact')">X</button>
+			<h4>連絡先メニュー</h4>
+		</div>
+	</div>
+
+	<div id="petCarousel" class="carousel slide" data-bs-ride="carousel">
+		<div class="carousel-inner">
+			<!-- ペットのアイテムを追加 -->
+			<div th:each="petData, stat : ${petList}" class="carousel-item"
+				th:classappend="${stat.first} ? 'active' : ''">
+				<img th:src="@{'/images/' + ${petData.petPhoto}}" class="d-block d-block-image" alt="Pet Photo"
+					th:attr="data-petid=${petData.petId}">
+
+				<div class="carousel-caption d-none d-md-block">
+					<h5 th:text="${petData.petName}"></h5>
+					<p>Age: <span th:text="${petData.petAge}"></span></p>
+					<p>Birthday: <span th:text="${#dates.format(petData.petBirthday,'yyyy/MM/dd')}"></span></p>
+					<p>Status: <span th:text="${petData.petStatus}"></span></p>
+				</div>
+			</div>
+		</div>
+		<!-- 前後のアイテムに切り替えるためのボタン -->
+		<button class="carousel-control-prev" type="button" data-bs-target="#petCarousel" data-bs-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+		</button>
+		<button class="carousel-control-next" type="button" data-bs-target="#petCarousel" data-bs-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+		</button>
+	</div>
+
+	<!-- ペットのデータ表示エリア -->
+	<div>
+		<h3>選択されたペットの情報:</h3>
+		<p>Pet ID: <span id="selectedPetId"></span></p>
+		<p>Name: <span id="selectedPetName"></span></p>
+		<p>Age: <span id="selectedPetAge"></span></p>
+		<p>Birthday: <span id="selectedPetBirthday"></span></p>
+		<p>Status: <span id="selectedPetStatus"></span></p>
+	</div>
+
+	</main>
+
+	<script>
+		// サイドバーを表示する関数
+		function openNav(menuType) {
+			document.getElementById('sidebar-' + menuType).style.left = "0";
+		}
+
+		// サイドバーを非表示にする関数
+		function closeNav(menuType) {
+			document.getElementById('sidebar-' + menuType).style.left = "-250px";
+		}
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var myCarousel = document.querySelector('#petCarousel');
+			var carousel = new bootstrap.Carousel(myCarousel, {
+				interval: false,
+				ride: false
+			});
+		});
+	</script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			const petCarousel = document.getElementById('petCarousel');
+			const carouselItems = petCarousel.querySelectorAll('.carousel-item');
+			let currentPetId; // 現在のペットのIDを保持する変数
+
+			// ペットのIDを取得する関数
+			function logImageId(imageElement) {
+				currentPetId = imageElement.getAttribute('data-petid');
+				console.log('Current Pet ID:', currentPetId);
+			}
+
+			// 最初の画像が表示された際にペットのIDを取得
+			const firstImage = carouselItems[0].querySelector('img');
+			logImageId(firstImage);
+
+			// 画像が切り替わるたびにペットのIDを取得
+			petCarousel.addEventListener('slide.bs.carousel', function (event) {
+				const activeItem = event.relatedTarget;
+				const imageElement = activeItem.querySelector('img');
+				logImageId(imageElement);
+			});
+		});
+	</script>
+	<script>
+		function logImageId(imageElement) {
+			const petId = imageElement.getAttribute('data-petid');
+			console.log('Pet ID:', petId);
+
+			// ペットのデータを表示
+			document.getElementById('selectedPetId').textContent = petId;
+			document.getElementById('selectedPetName').textContent = imageElement.getAttribute('alt');
+			// 他のペットのデータも同様に設定
+			// ...
+		}
+	</script>
+</body>
+
+</html>
