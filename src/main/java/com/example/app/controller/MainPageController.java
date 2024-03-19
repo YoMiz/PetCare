@@ -15,7 +15,6 @@ public class MainPageController {
 	@GetMapping("/")
 	public String showPets(Model model) throws Exception {
 		model.addAttribute("petList",petDataMapper.showPets());
-		System.out.println(petDataMapper.showPets());
 		
 		return "Front/Main";
 	}
