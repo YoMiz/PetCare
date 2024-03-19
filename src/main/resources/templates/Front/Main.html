@@ -41,7 +41,7 @@
 					<h5 th:text="${petData.petName}"></h5>
 					<p>Age: <span th:text="${petData.petAge}"></span></p>
 					<p>Birthday: <span th:text="${#dates.format(petData.petBirthday,'yyyy/MM/dd')}"></span></p>
-					<p>Status: <span th:text="${petData.petStatus}"></span></p>
+					<p>Status: <span th:text="${petData.statusName}"></span></p>
 				</div>
 			</div>
 		</div>

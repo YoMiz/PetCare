@@ -3,9 +3,7 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.app.mapper.PetDataMapper">
 	<select id="showPets" resultType="com.example.app.domain.PetData">
-	SELECT * FROM pet_care_db.pet_data
-	</select>
-	<select id="showPet" resultType="com.example.app.domain.PetData">
-	SELECT * FROM pet_care_db.pet_data WHERE pet_id = 1
+	SELECT * FROM pet_care_db.pet_data JOIN pet_care_db.pet_status ON pet_data.pet_status = pet_status.status_id;
+
 	</select>
 </mapper>

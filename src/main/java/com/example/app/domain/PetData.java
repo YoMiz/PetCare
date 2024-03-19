@@ -19,4 +19,12 @@ public class PetData {
 	@DateTimeFormat(pattern="yyyy/MM/dd")
 	Date petBirthday;
 	String petPhoto;
+	@DateTimeFormat(pattern="yyyy/MM/dd")
+	Date petCreated;
+	@DateTimeFormat(pattern="yyyy/MM/dd")
+	Date petUpdated;
+	String statusName;
+	Integer statusConsumptionFood;
+	Integer statusConsumptionSundry;
+	Integer statusConsumptionOthers;
 }
