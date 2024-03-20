@@ -55,13 +55,24 @@
 	</div>
 
 	<!-- ペットのデータ表示エリア -->
-	<div>
-		<div th:each="petData : ${petList}">
-			<div th:text="${petData.petName}"></div>
-			<div th:each="inventory : ${petInventoryMap[petData.petId]}">
-				<div th:text="${inventory.inventoryName}"></div>
-			</div>
-		</div>
+	<div th:each="petData : ${petList}">
+		<h2 th:text="${petData.petName}"></h2>
+		<table border="2">
+			<thead>
+				<tr>
+					<th>商品名</th>
+					<th>在庫数</th>
+					<th>製品価格</th>
+				</tr>
+			</thead>
+			<tbody th:each="inventory : ${petInventoryMap[petData.petId]}">
+				<tr>
+					<td th:text="${inventory.inventoryName}"></td>
+					<td th:text="${inventory.inventoryAmount}"></td>
+					<td th:text="${inventory.inventoryPrice}"></td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 
 	</main>
