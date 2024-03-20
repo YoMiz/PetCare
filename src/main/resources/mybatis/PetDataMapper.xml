@@ -4,6 +4,5 @@
 <mapper namespace="com.example.app.mapper.PetDataMapper">
 	<select id="showPets" resultType="com.example.app.domain.PetData">
 	SELECT * FROM pet_care_db.pet_data JOIN pet_care_db.pet_status ON pet_data.pet_status = pet_status.status_id;
-
 	</select>
 </mapper>
