@@ -53,9 +53,9 @@
 			<span class="carousel-control-next-icon" aria-hidden="true"></span>
 		</button>
 	</div>
-
+	<br />
 	<!-- ペットのデータ表示エリア -->
-	<div th:each="petData : ${petList}">
+	<div th:each="petData : ${petList}" class="inventory-list" th:id="'inventory-list-' + ${petData.petId}">
 		<h2 th:text="${petData.petName}"></h2>
 		<table border="2">
 			<thead>
@@ -74,7 +74,22 @@
 			</tbody>
 		</table>
 	</div>
-
+	<br />
+	<div th:each="contactData:${contactList}" class="contact-list" th:id="'contact-list-' + ${petData.petId}">
+		<h2 th:text="${petData.petName}">
+			<table>
+				<thead>
+					<tr>
+						<th></th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				
+			</table>
+		</h2>
+		
+	</div>
 	</main>
 
 	<script>
@@ -102,12 +117,23 @@
 		document.addEventListener('DOMContentLoaded', function () {
 			const petCarousel = document.getElementById('petCarousel');
 			const carouselItems = petCarousel.querySelectorAll('.carousel-item');
-			let currentPetId; // 現在のペットのIDを保持する変数
 
 			// ペットのIDを取得する関数
 			function logImageId(imageElement) {
-				currentPetId = imageElement.getAttribute('data-petid');
-				console.log('Current Pet ID:', currentPetId);
+				const petId = imageElement.getAttribute('data-petid');
+				console.log('Pet ID:', petId);
+
+				// すべてのテーブルを非表示にする
+				const inventoryLists = document.querySelectorAll('.inventory-list');
+				inventoryLists.forEach(function (inventoryList) {
+					inventoryList.style.display = 'none';
+				});
+
+				// 対応するテーブルを表示する
+				const activeInventoryList = document.getElementById('inventory-list-' + petId);
+				if (activeInventoryList) {
+					activeInventoryList.style.display = 'block';
+				}
 			}
 
 			// 最初の画像が表示された際にペットのIDを取得
@@ -121,17 +147,6 @@
 				logImageId(imageElement);
 			});
 		});
-	</script>
-	<script>
-		function logImageId(imageElement) {
-			const petId = imageElement.getAttribute('data-petid');
-			console.log('Pet ID:', petId);
-
-			// ペットのデータを表示
-			document.getElementById('selectedPetId').textContent = petId;
-			document.getElementById('selectedPetName').textContent = imageElement.getAttribute('alt');
-			document.getElementById('selectedPetAge').textContent = imageElement.getAttribute('alt');
-		}
 	</script>
 </body>
 
