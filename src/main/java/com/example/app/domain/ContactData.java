@@ -7,12 +7,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InventoryData {
-	Integer inventoryId;
+public class ContactData {
+	Integer contactId;
 	Integer petId;
-	Integer inventoryType;
-	String inventoryName;
-	String inventoryTypeName;
-	Integer inventoryAmount;
-	Integer inventoryPrice;
+	Integer contactType;
+	String contactName;
+	String contactInCharge;
+	String contactTel;
+	String contactMail;
+	String contactUrl;
+	
 }

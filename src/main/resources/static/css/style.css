@@ -104,13 +104,17 @@ body {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
-.inventory-list h2{
+.list h2{
 	text-align:center;
 }
-.inventory-list table{
+.list table{
 	width:80%;
 	margin:auto;
+	border-collapse:collapse;
 }
-.inventory-list tbody:nth-child(odd) ,.inventory-list th{
+.list th, .list td{
+	border:2px solid rgb(141,106,105);
+}
+.list tbody:nth-child(odd) ,.list th{
 	background-color: rgb(209, 174, 119);
 }

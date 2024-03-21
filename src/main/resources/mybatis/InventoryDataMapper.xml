@@ -2,10 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.app.mapper.InventoryMapper">
-    <select id="showInventory" resultType="com.example.app.domain.InventoryData">
-        SELECT * FROM pet_care_db.inventory
-    </select>
-    <select id="showInventoryForPet" resultType="com.example.app.domain.InventoryData">
-        SELECT * FROM pet_care_db.inventory WHERE pet_id = #{petId}
-    </select>
+	<select id="showInventory"
+		resultType="com.example.app.domain.InventoryData">
+		SELECT * FROM pet_care_db.inventory
+	</select>
+	<select id="showInventoryForPet"
+		resultType="com.example.app.domain.InventoryData">
+		SELECT *
+		FROM pet_care_db.inventory
+		JOIN
+		pet_care_db.inventory_type
+		ON inventory.inventory_type =
+		inventory_type.inventory_type_id
+		WHERE pet_id = #{petId}
+	</select>
+
 </mapper>
