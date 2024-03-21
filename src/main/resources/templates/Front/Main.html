@@ -74,7 +74,22 @@
 			</tbody>
 		</table>
 	</div>
-
+	<br />
+	<div th:each="contactData:${contactList}" class="contact-list" th:id="'contact-list-' + ${petData.petId}">
+		<h2 th:text="${petData.petName}">
+			<table>
+				<thead>
+					<tr>
+						<th></th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				
+			</table>
+		</h2>
+		
+	</div>
 	</main>
 
 	<script>
