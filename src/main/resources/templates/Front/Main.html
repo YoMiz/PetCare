@@ -10,10 +10,11 @@
 
 <body>
 	<div id="sidebar-menu">
-		<button id="openbtn-pet" class="openbtn" onclick="openNav('pet')">			<img src="/images/icon/paw.jpg" alt=""  width="30px" height="30px"/>ペットメニュー</button>
+		<button id="openbtn-pet" class="openbtn" onclick="openNav('pet')"> <img src="/images/icon/paw.jpg" alt=""
+				width="30px" height="30px" />ペットメニュー</button>
 		<div id="sidebar-pet" class="sidebar">
 			<button class="closebtn" onclick="closeNav('pet')">X</button>
-			<img src="/images/icon/paw.jpg" alt=""  width="30px" height="30px"/>
+			<img src="/images/icon/paw.jpg" alt="" width="30px" height="30px" />
 			<h4>ペットメニュー</h4>
 		</div>
 
@@ -26,10 +27,10 @@
 		</div>
 
 		<button id="openbtn-contact" class="openbtn" onclick="openNav('contact')">
-			<img src="/images/icon/tel.jpg" alt=""  width="30px" height="30px"/>連絡メニュー</button>
+			<img src="/images/icon/tel.jpg" alt="" width="30px" height="30px" />連絡メニュー</button>
 		<div id="sidebar-contact" class="sidebar">
 			<button class="closebtn" onclick="closeNav('contact')">X</button>
-			<img src="/images/icon/tel.jpg" alt=""  width="30px" height="30px"/>
+			<img src="/images/icon/tel.jpg" alt="" width="30px" height="30px" />
 			<h4>連絡先メニュー</h4>
 		</div>
 	</div>
@@ -59,9 +60,11 @@
 			</button>
 		</div>
 		<br />
+		<br />
 		<!-- ペットのアイテム・コンタクトデータ表示エリア -->
 		<div th:each="petData : ${petList}" class="inventory-list list" th:id="'inventory-list-' + ${petData.petId}">
-			<h2 th:text="${petData.petName}"></h2>
+			<h2 th:text="${petData.petName}" class="contents-header"></h2>
+			<br />
 			<table>
 				<thead>
 					<tr>
@@ -69,21 +72,26 @@
 						<th>内容</th>
 						<th>在庫数</th>
 						<th>製品価格</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody th:each="inventory : ${petInventoryMap[petData.petId]}">
 					<tr>
 						<td th:text="${inventory.inventoryName}"></td>
 						<td th:text="${inventory.inventoryTypeName}"></td>
-						<td th:text="${inventory.inventoryAmount}"></td>
-						<td th:text="${inventory.inventoryPrice}"></td>
+						<td th:text="${inventory.inventoryAmount} + '　個'"></td>
+						<td th:text="${inventory.inventoryPrice} + '　円'"></td>
+						<td>変更</td>
 					</tr>
 				</tbody>
+				<td>追加</td>
 			</table>
 		</div>
 		<br />
+		<br />
 		<div th:each="petData:${petList}" class="contact-list list" th:id="'contact-list-' + ${petData.petId}">
-			<h2 th:text="${petData.petName}"></h2>
+			<h2 th:text="${petData.petName}" class="contents-header"></h2>
+			<br />
 			<table>
 				<thead>
 					<tr>
@@ -93,6 +101,7 @@
 						<th>電話番号</th>
 						<th>メールアドレス</th>
 						<th>URL</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody th:each="contact : ${petContactMap[petData.petId]}">
@@ -103,11 +112,13 @@
 						<td th:text="${contact.contactTel}"></td>
 						<td th:text="${contact.contactMail}"></td>
 						<td th:text="${contact.contactUrl}"></td>
+						<td>変更</td>
 					</tr>
 				</tbody>
+				<td>追加</td>
 			</table>
 		</div>
-
+		<br />
 	</main>
 	<script>
 		// サイドバーを表示する関数
