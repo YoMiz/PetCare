@@ -35,9 +35,8 @@
 		</div>
 	</div>
 	<main>
-		<div id="petCarousel" class="carousel slide" data-bs-ride="carousel">
+		<div id="petCarousel" class="carousel slide">
 			<div class="carousel-inner">
-				ペットのアイテムを追加
 				<div th:each="petData, stat : ${petList}" class="carousel-item"
 					th:classappend="${stat.first} ? 'active' : ''">
 					<img th:src="@{'/images/' + ${petData.petPhoto}}" class="d-block d-block-image" alt="Pet Photo"
@@ -50,9 +49,9 @@
 						<p>Status: <span th:text="${petData.statusName}"></span></p>
 					</div>
 				</div>
-			<!-- ここにペットのグラフを挿入 -->
+				<!-- ここにペットのグラフを挿入 -->
 			</div>
-			
+
 			<!-- 前後のアイテムに切り替えるためのボタン -->
 			<button class="carousel-control-prev" type="button" data-bs-target="#petCarousel" data-bs-slide="prev">
 				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -62,6 +61,12 @@
 			</button>
 		</div>
 		<br />
+		<div class="pet-scroll">
+			<div th:each="petData, stat : ${petList}">
+				<img th:src="@{'/images/' + ${petData.petPhoto}}" th:class="${petData.petId}" width="150px"
+					height="150px">
+			</div>
+		</div>
 		<br />
 		<!-- ペットのアイテム・コンタクトデータ表示エリア -->
 		<div th:each="petData : ${petList}" class="inventory-list list" th:id="'inventory-list-' + ${petData.petId}">
@@ -135,23 +140,27 @@
 	</script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			var myCarousel = document.querySelector('#petCarousel');
-			var carousel = new bootstrap.Carousel(myCarousel, {
+		window.onload = function () {
+			const petCarousel = document.getElementById('petCarousel');
+			const carousel = new bootstrap.Carousel(petCarousel, {
 				interval: false,
 				ride: false
 			});
-		});
-	</script>
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			const petCarousel = document.getElementById('petCarousel');
+
 			const carouselItems = petCarousel.querySelectorAll('.carousel-item');
+			const petImages = document.querySelectorAll('.pet-scroll img');
 
 			// ペットのIDを取得する関数
 			function logImageId(imageElement) {
-				const petId = imageElement.getAttribute('data-petid');
+				const petId = imageElement.className;
 				console.log('Pet ID:', petId);
+				// ここでカルーセルのアイテムを切り替える
+				for (let i = 0; i < carouselItems.length; i++) {
+					if (carouselItems[i].querySelector('img').getAttribute('data-petid') === petId) {
+						carousel.to(i);
+						break;
+					}
+				}
 
 				// すべてのテーブルを非表示にする
 				const inventoryLists = document.querySelectorAll('.inventory-list');
@@ -174,18 +183,20 @@
 				}
 			}
 
+			// 画像がクリックされたときにペットのIDを取得
+			petImages.forEach(function (imageElement) {
+				imageElement.addEventListener('click', function () {
+					logImageId(imageElement);
+				});
+			});
+
 			// 最初の画像が表示された際にペットのIDを取得
 			const firstImage = carouselItems[0].querySelector('img');
 			logImageId(firstImage);
-
-			// 画像が切り替わるたびにペットのIDを取得
-			petCarousel.addEventListener('slide.bs.carousel', function (event) {
-				const activeItem = event.relatedTarget;
-				const imageElement = activeItem.querySelector('img');
-				logImageId(imageElement);
-			});
-		});
+		};
 	</script>
+
+
 </body>
 
 </html>
