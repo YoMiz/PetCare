@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 public class InventoryData {
 	Integer inventoryId;
 	Integer petId;
+	Integer inventoryType;
 	String inventoryName;
+	String inventoryTypeName;
 	Integer inventoryAmount;
 	Integer inventoryPrice;
 }
