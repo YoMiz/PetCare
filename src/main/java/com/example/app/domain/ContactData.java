@@ -16,5 +16,6 @@ public class ContactData {
 	String contactTel;
 	String contactMail;
 	String contactUrl;
+	String contactTypeName;
 	
 }

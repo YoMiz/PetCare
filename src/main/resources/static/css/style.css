@@ -98,14 +98,15 @@ body {
 }
 
 .carousel-caption {
-	background-color: rgba(141, 106, 105, 0.6);
+	background-color: rgba(149, 114, 117, 0.6);
 	border-radius: 10px;
 	padding: 10px;
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
 .contents-header {
-	background-color:rgb(209, 174, 119);
+	background-color: rgb(141,106,105);
+	color:white;
 }
 .list h2{
 	text-align:center;
