@@ -141,62 +141,70 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
 		window.onload = function () {
-			const petCarousel = document.getElementById('petCarousel');
-			const carousel = new bootstrap.Carousel(petCarousel, {
-				interval: false,
-				ride: false
-			});
+				const petCarousel = document.getElementById('petCarousel');
+				const carousel = new bootstrap.Carousel(petCarousel, {
+					interval: false,
+					ride: false
+				});
 
-			const carouselItems = petCarousel.querySelectorAll('.carousel-item');
-			const petImages = document.querySelectorAll('.pet-scroll img');
+				const carouselItems = petCarousel.querySelectorAll('.carousel-item');
+				const petImages = document.querySelectorAll('.pet-scroll img');
 
-			// ペットのIDを取得する関数
-			function logImageId(imageElement) {
-				const petId = imageElement.className;
-				console.log('Pet ID:', petId);
-				// ここでカルーセルのアイテムを切り替える
-				for (let i = 0; i < carouselItems.length; i++) {
-					if (carouselItems[i].querySelector('img').getAttribute('data-petid') === petId) {
-						carousel.to(i);
-						break;
+				function logImageId(imageElement) {
+					const petId = imageElement.className;
+					console.log('Pet ID:', petId);
+
+					const inventoryLists = document.querySelectorAll('.inventory-list');
+					inventoryLists.forEach(function (inventoryList) {
+						inventoryList.style.display = 'none';
+					});
+					const contactLists = document.querySelectorAll('.contact-list');
+					contactLists.forEach(function (contactList) {
+						contactList.style.display = 'none';
+					})
+
+					const activeInventoryList = document.getElementById('inventory-list-' + petId);
+					if (activeInventoryList) {
+						activeInventoryList.style.display = 'block';
+					}
+					const activeContactList = document.getElementById('contact-list-' + petId);
+					if (activeContactList) {
+						activeContactList.style.display = 'block';
 					}
 				}
 
-				// すべてのテーブルを非表示にする
-				const inventoryLists = document.querySelectorAll('.inventory-list');
-				inventoryLists.forEach(function (inventoryList) {
-					inventoryList.style.display = 'none';
+				petImages.forEach(function (imageElement) {
+					imageElement.addEventListener('click', function () {
+						logImageId(imageElement);
+					});
 				});
-				const contactLists = document.querySelectorAll('.contact-list');
-				contactLists.forEach(function (contactList) {
-					contactList.style.display = 'none';
-				})
 
-				// 対応するテーブルを表示する
-				const activeInventoryList = document.getElementById('inventory-list-' + petId);
-				if (activeInventoryList) {
-					activeInventoryList.style.display = 'block';
-				}
-				const activeContactList = document.getElementById('contact-list-' + petId);
-				if (activeContactList) {
-					activeContactList.style.display = 'block';
-				}
-			}
+				const carouselPrevButton = document.querySelector('.carousel-control-prev');
+				const carouselNextButton = document.querySelector('.carousel-control-next');
 
-			// 画像がクリックされたときにペットのIDを取得
-			petImages.forEach(function (imageElement) {
-				imageElement.addEventListener('click', function () {
-					logImageId(imageElement);
+				carouselPrevButton.addEventListener('click', function () {
+					$(petCarousel).on('slid.bs.carousel', function () {
+						const activeImage = petCarousel.querySelector('.carousel-item.active img');
+						logImageId(activeImage);
+						$(petCarousel).off('slid.bs.carousel');
+					});
 				});
-			});
 
-			// 最初の画像が表示された際にペットのIDを取得
-			const firstImage = carouselItems[0].querySelector('img');
-			logImageId(firstImage);
-		};
+				carouselNextButton.addEventListener('click', function () {
+					$(petCarousel).on('slid.bs.carousel', function () {
+						const activeImage = petCarousel.querySelector('.carousel-item.active img');
+						logImageId(activeImage);
+						$(petCarousel).off('slid.bs.carousel');
+					});
+				});
+
+				// Call logImageId for the first image after the carousel has initialized
+				$(petCarousel).on('initialized.bs.carousel', function () {
+					const firstImage = carouselItems[0].querySelector('img');
+					logImageId(firstImage);
+				});
+			};
 	</script>
-
-
 </body>
 
 </html>

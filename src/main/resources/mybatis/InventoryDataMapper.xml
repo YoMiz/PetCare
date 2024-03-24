@@ -8,12 +8,16 @@
 	</select>
 	<select id="showInventoryForPet"
 		resultType="com.example.app.domain.InventoryData">
-		SELECT *
+			SELECT *
 		FROM pet_care_db.inventory
 		JOIN
 		pet_care_db.inventory_type
 		ON inventory.inventory_type =
 		inventory_type.inventory_type_id
+        JOIN 
+        pet_care_db.pet_inventory
+        ON inventory.inventory_id =
+        pet_inventory.inventory_id
 		WHERE pet_id = #{petId}
 	</select>
 

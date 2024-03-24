@@ -35,7 +35,8 @@ public class MainPageController {
 			petInventoryMap.put(petId, petInventory);
 			List<ContactData> petContact = contactMapper.showContactForPet(petId);
 			petContactMap.put(petId, petContact);
-			}
+		}
+		
 		model.addAttribute("petList", petList);
 		model.addAttribute("petInventoryMap", petInventoryMap);
 		model.addAttribute("petContactMap", petContactMap);
