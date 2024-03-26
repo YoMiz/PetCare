@@ -1,5 +1,6 @@
 package com.example.app.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,25 +24,30 @@ public class MainPageController {
 	private final PetDataMapper petDataMapper;
 	private final InventoryMapper inventoryMapper;
 	private final ContactMapper contactMapper;
+
 	@GetMapping("/")
 	public String showPets(Model model) throws Exception {
 		List<PetData> petList = petDataMapper.showPets();
 		Map<Integer, List<InventoryData>> petInventoryMap = new HashMap<>();
 		Map<Integer, List<ContactData>> petContactMap = new HashMap<>();
-		
-		for(PetData pet : petList) {
+
+		// petIdListを生成します
+		List<Integer> petIdList = new ArrayList<>();
+		for (PetData pet : petList) {
 			int petId = pet.getPetId();
+			petIdList.add(petId); // リストにpetIdを追加します
+
 			List<InventoryData> petInventory = inventoryMapper.showInventoryForPet(petId);
 			petInventoryMap.put(petId, petInventory);
 			List<ContactData> petContact = contactMapper.showContactForPet(petId);
 			petContactMap.put(petId, petContact);
 		}
-		
+
 		model.addAttribute("petList", petList);
+		model.addAttribute("petIdList", petIdList); // モデルにpetIdListを追加します
 		model.addAttribute("petInventoryMap", petInventoryMap);
 		model.addAttribute("petContactMap", petContactMap);
-		
+		System.out.println(petIdList);
 		return "Front/Main";
 	}
 }
-
