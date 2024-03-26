@@ -139,72 +139,78 @@
 		}
 	</script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script>
 		window.onload = function () {
-				const petCarousel = document.getElementById('petCarousel');
-				const carousel = new bootstrap.Carousel(petCarousel, {
-					interval: false,
-					ride: false
+			const petCarousel = document.getElementById('petCarousel');
+			const carousel = new bootstrap.Carousel(petCarousel, {
+				interval: false,
+				ride: false
+			});
+
+			const carouselItems = petCarousel.querySelectorAll('.carousel-item');
+			const petImages = document.querySelectorAll('.pet-scroll img');
+
+			function logImageId(imageElement) {
+				const petId = imageElement.getAttribute('data-petid');
+				console.log('Pet ID:', petId);
+
+				const inventoryLists = document.querySelectorAll('.inventory-list');
+				inventoryLists.forEach(function (inventoryList) {
+					inventoryList.style.display = 'none';
 				});
+				const contactLists = document.querySelectorAll('.contact-list');
+				contactLists.forEach(function (contactList) {
+					contactList.style.display = 'none';
+				})
 
-				const carouselItems = petCarousel.querySelectorAll('.carousel-item');
-				const petImages = document.querySelectorAll('.pet-scroll img');
-
-				function logImageId(imageElement) {
-					const petId = imageElement.className;
-					console.log('Pet ID:', petId);
-
-					const inventoryLists = document.querySelectorAll('.inventory-list');
-					inventoryLists.forEach(function (inventoryList) {
-						inventoryList.style.display = 'none';
-					});
-					const contactLists = document.querySelectorAll('.contact-list');
-					contactLists.forEach(function (contactList) {
-						contactList.style.display = 'none';
-					})
-
-					const activeInventoryList = document.getElementById('inventory-list-' + petId);
-					if (activeInventoryList) {
-						activeInventoryList.style.display = 'block';
-					}
-					const activeContactList = document.getElementById('contact-list-' + petId);
-					if (activeContactList) {
-						activeContactList.style.display = 'block';
-					}
+				const activeInventoryList = document.getElementById('inventory-list-' + petId);
+				if (activeInventoryList) {
+					activeInventoryList.style.display = 'block';
 				}
+				const activeContactList = document.getElementById('contact-list-' + petId);
+				if (activeContactList) {
+					activeContactList.style.display = 'block';
+				}
+			}
 
-				petImages.forEach(function (imageElement) {
-					imageElement.addEventListener('click', function () {
-						logImageId(imageElement);
-					});
+			petImages.forEach(function (imageElement) {
+				imageElement.addEventListener('click', function () {
+					logImageId(imageElement);
 				});
+			});
 
-				const carouselPrevButton = document.querySelector('.carousel-control-prev');
-				const carouselNextButton = document.querySelector('.carousel-control-next');
+			const carouselPrevButton = document.querySelector('.carousel-control-prev');
+			const carouselNextButton = document.querySelector('.carousel-control-next');
 
-				carouselPrevButton.addEventListener('click', function () {
-					$(petCarousel).on('slid.bs.carousel', function () {
-						const activeImage = petCarousel.querySelector('.carousel-item.active img');
-						logImageId(activeImage);
-						$(petCarousel).off('slid.bs.carousel');
-					});
+			carouselPrevButton.addEventListener('click', function () {
+				$(petCarousel).on('slid.bs.carousel', function () {
+					const activeImage = petCarousel.querySelector('.carousel-item.active img');
+					logImageId(activeImage);
+					$(petCarousel).off('slid.bs.carousel');
 				});
+			});
 
-				carouselNextButton.addEventListener('click', function () {
-					$(petCarousel).on('slid.bs.carousel', function () {
-						const activeImage = petCarousel.querySelector('.carousel-item.active img');
-						logImageId(activeImage);
-						$(petCarousel).off('slid.bs.carousel');
-					});
+			carouselNextButton.addEventListener('click', function () {
+				$(petCarousel).on('slid.bs.carousel', function () {
+					const activeImage = petCarousel.querySelector('.carousel-item.active img');
+					logImageId(activeImage);
+					$(petCarousel).off('slid.bs.carousel');
 				});
+			});
 
-				// Call logImageId for the first image after the carousel has initialized
-				$(petCarousel).on('initialized.bs.carousel', function () {
-					const firstImage = carouselItems[0].querySelector('img');
-					logImageId(firstImage);
-				});
-			};
+			// Call logImageId for the first image after the carousel has initialized
+			$(petCarousel).on('initialized.bs.carousel', function () {
+				const firstImage = carouselItems[0].querySelector('img');
+				logImageId(firstImage);
+			});
+			$(document).ready(function () {
+				var petId = $('.d-block.d-block-image').data('petid');
+				console.log(petId);
+			});
+		};
 	</script>
+
 </body>
 
 </html>

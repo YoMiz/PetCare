@@ -35,7 +35,7 @@ public class MainPageController {
 		List<Integer> petIdList = new ArrayList<>();
 		for (PetData pet : petList) {
 			int petId = pet.getPetId();
-			petIdList.add(petId); // リストにpetIdを追加します
+			//petIdList.add(petId); // リストにpetIdを追加します
 
 			List<InventoryData> petInventory = inventoryMapper.showInventoryForPet(petId);
 			petInventoryMap.put(petId, petInventory);
