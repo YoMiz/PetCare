@@ -86,11 +86,6 @@ body {
 	height: 500px;
 }
 
-.previous-image {
-	height: 300px;
-	width: auto;
-	opacity: 60%;
-}
 
 .sidebar {
 	text-align: center;
@@ -108,6 +103,14 @@ body {
 	background-color: rgb(141,106,105);
 	color:white;
 }
+.pet-scroll {
+    display: flex;
+    direction:row;
+    overflow-x: auto;
+    width:80%;
+    margin:auto;
+}
+
 .list h2{
 	text-align:center;
 }
