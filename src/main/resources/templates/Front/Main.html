@@ -63,10 +63,11 @@
 		<br />
 		<div class="pet-scroll">
 			<div th:each="petData, stat : ${petList}">
-				<img th:src="@{'/images/' + ${petData.petPhoto}}" th:class="${petData.petId}" width="150px"
-					height="150px">
+				<img th:src="@{'/images/' + ${petData.petPhoto}}" class="${petData.petId}"
+					th:attr="data-petid=${petData.petId}" width="150px" height="150px">
 			</div>
 		</div>
+
 		<br />
 		<!-- ペットのアイテム・コンタクトデータ表示エリア -->
 		<div th:each="petData : ${petList}" class="inventory-list list" th:id="'inventory-list-' + ${petData.petId}">
@@ -93,6 +94,7 @@
 				</tbody>
 				<td>追加</td>
 			</table>
+			<br />
 		</div>
 		<br />
 		<br />
@@ -124,6 +126,7 @@
 				</tbody>
 				<td>追加</td>
 			</table>
+			<br />
 		</div>
 		<br />
 	</main>
@@ -155,23 +158,19 @@
 				const petId = imageElement.getAttribute('data-petid');
 				console.log('Pet ID:', petId);
 
-				const inventoryLists = document.querySelectorAll('.inventory-list');
-				inventoryLists.forEach(function (inventoryList) {
-					inventoryList.style.display = 'none';
+				// Show the corresponding pet data in the Carousel
+				$('.carousel-item.active').removeClass('active');
+				$('.carousel-item').each(function () {
+					if ($(this).find('img').data('petid') == petId) {
+						$(this).addClass('active');
+					}
 				});
-				const contactLists = document.querySelectorAll('.contact-list');
-				contactLists.forEach(function (contactList) {
-					contactList.style.display = 'none';
-				})
 
-				const activeInventoryList = document.getElementById('inventory-list-' + petId);
-				if (activeInventoryList) {
-					activeInventoryList.style.display = 'block';
-				}
-				const activeContactList = document.getElementById('contact-list-' + petId);
-				if (activeContactList) {
-					activeContactList.style.display = 'block';
-				}
+				// Show the corresponding pet data in the list
+				$('.inventory-list').hide();
+				$('#inventory-list-' + petId).show();
+				$('.contact-list').hide();
+				$('#contact-list-' + petId).show();
 			}
 
 			petImages.forEach(function (imageElement) {
@@ -198,19 +197,8 @@
 					$(petCarousel).off('slid.bs.carousel');
 				});
 			});
-
-			// Call logImageId for the first image after the carousel has initialized
-			$(petCarousel).on('initialized.bs.carousel', function () {
-				const firstImage = carouselItems[0].querySelector('img');
-				logImageId(firstImage);
-			});
-			$(document).ready(function () {
-				var petId = $('.d-block.d-block-image').data('petid');
-				console.log(petId);
-			});
 		};
 	</script>
-
 </body>
 
 </html>
