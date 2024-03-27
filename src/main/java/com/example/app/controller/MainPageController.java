@@ -33,9 +33,10 @@ public class MainPageController {
 
 		// petIdListを生成します
 		List<Integer> petIdList = new ArrayList<>();
+		
 		for (PetData pet : petList) {
 			int petId = pet.getPetId();
-			//petIdList.add(petId); // リストにpetIdを追加します
+			petIdList.add(petId); // リストにpetIdを追加します
 
 			List<InventoryData> petInventory = inventoryMapper.showInventoryForPet(petId);
 			petInventoryMap.put(petId, petInventory);
@@ -44,7 +45,7 @@ public class MainPageController {
 		}
 
 		model.addAttribute("petList", petList);
-		model.addAttribute("petIdList", petIdList); // モデルにpetIdListを追加します
+		model.addAttribute("petIdList", petIdList); 
 		model.addAttribute("petInventoryMap", petInventoryMap);
 		model.addAttribute("petContactMap", petContactMap);
 		System.out.println(petIdList);
