@@ -9,8 +9,10 @@
 <body>
 	<th:block th:unless="${session.userLogin}" class="error">	
 	<form action="/main" method="post" th:object="${user}">
+		<p>LoginId</p>
 		<input type="text" th:field="*{userLogin}" />
 		<span th:errors="*{userLogin}" class="error"></span>
+		<p>LoginPass</p>
 		<input type="text" th:field="*{userPassword}" />
 		<span th:errors="*{userPassword}" class="error"></span>
 		<input type="submit" />
