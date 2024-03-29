@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+</head>
+
+<body>
+	<th:block th:unless="${session.userLogin}" class="error">	
+	<form action="/main" method="post" th:object="${user}">
+		<input type="text" th:field="*{userLogin}" />
+		<span th:errors="*{userLogin}" class="error"></span>
+		<input type="text" th:field="*{userPassword}" />
+		<span th:errors="*{userPassword}" class="error"></span>
+		<input type="submit" />
+	</form>
+	</th:block>
+
+</body>
+
+</html>
