@@ -17,13 +17,14 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public boolean isCorrectIdAndPassword(String userLogin, String userPassword) throws Exception {
-		User user = mapper.selectUserByUserId(userLogin);
+		User user = mapper.selectUserByUserLogin(userLogin);
 		if(user == null) {
 			return false;
 		}
 		if(!BCrypt.checkpw(userPassword,  user.getUserPassword())) {
 			return false;
 		}
+		user = mapper.selectUserByUserLogin(userLogin);
 		return true;
 	}
 

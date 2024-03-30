@@ -5,7 +5,8 @@
 <select id="showUser">
 	SELECT * FROM pet_care_db.user_data
 </select>
-<select id="selectUserByUserId" resultType="com.example.app.domain.User">
+<select id="selectUserByUserLogin" resultType="com.example.app.domain.User">
 	SELECT * FROM pet_care_db.user_data WHERE user_login = #{userLogin}
 </select>
+
 </mapper>

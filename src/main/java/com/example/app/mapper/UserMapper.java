@@ -9,6 +9,6 @@ import com.example.app.domain.User;
 @Mapper
 public interface UserMapper {
 	List<User> showUser() throws Exception;
-	User selectUserByUserId(String userLogin) throws Exception;
+	User selectUserByUserLogin(String userLogin) throws Exception;
 	
 }

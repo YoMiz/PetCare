@@ -21,6 +21,7 @@ import com.example.app.domain.User;
 import com.example.app.mapper.ContactMapper;
 import com.example.app.mapper.InventoryMapper;
 import com.example.app.mapper.PetDataMapper;
+import com.example.app.mapper.UserMapper;
 import com.example.app.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -34,6 +35,7 @@ public class MainPageController {
 	private final InventoryMapper inventoryMapper;
 	private final ContactMapper contactMapper;
 	private final UserService userService;
+	private final UserMapper userMapper;
 
 	@PostMapping("/main")
 	public String showPets(HttpSession session, @Valid User user, Errors errors, BindingResult bindingResult, Model model) throws Exception {
@@ -48,10 +50,12 @@ public class MainPageController {
 			System.out.println("incorrect");
 			return "redirect:/login";
 		}
-		session.setAttribute("userLogin", user.getUserLogin());
+		
+		user = userMapper.selectUserByUserLogin(user.getUserLogin());
+		session.setAttribute("userLogin", user.getUserName());
 		
 		
-		List<PetData> petList = petDataMapper.showPets();
+		List<PetData> petList = petDataMapper.showUserPets(user.getUserId());
 		Map<Integer, List<InventoryData>> petInventoryMap = new HashMap<>();
 		Map<Integer, List<ContactData>> petContactMap = new HashMap<>();
 		List<Integer> petIdList = new ArrayList<>();
@@ -73,17 +77,15 @@ public class MainPageController {
 			
 			List<InventoryData> petInventory = inventoryMapper.showInventoryForPet(petId);
 			petInventoryMap.put(petId, petInventory);
+			System.out.println(petInventory);
 			List<ContactData> petContact = contactMapper.showContactForPet(petId);
-			petContactMap.put(petId, petContact);
 		}
 
 		model.addAttribute("petList", petList);
 		model.addAttribute("petIdList", petIdList); 
 		model.addAttribute("petInventoryMap", petInventoryMap);
 		model.addAttribute("petContactMap", petContactMap);
-		System.out.println(petList);
-		System.out.println(petInventoryMap);
-		System.out.println(petContactMap);
+
 		return "Front/Main";
 	}
 	

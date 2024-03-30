@@ -9,4 +9,5 @@ import com.example.app.domain.PetData;
 @Mapper
 public interface PetDataMapper {
 	List<PetData> showPets() throws Exception;
+	List<PetData> showUserPets(Integer userId) throws Exception;
 }
