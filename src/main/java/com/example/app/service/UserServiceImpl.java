@@ -24,6 +24,7 @@ public class UserServiceImpl implements UserService{
 		if(!BCrypt.checkpw(userPassword,  user.getUserPassword())) {
 			return false;
 		}
+		user = mapper.selectUserByUserLogin(userLogin);
 		return true;
 	}
 
