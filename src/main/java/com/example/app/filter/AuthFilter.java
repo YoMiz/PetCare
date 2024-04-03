@@ -18,8 +18,8 @@ public class AuthFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 		HttpSession session = req.getSession();
-		if (session.getAttribute("loginId") == null) {
-			res.sendRedirect("/");
+		if (session.getAttribute("user") == null) {
+			res.sendRedirect("/login");
 			return;
 		}
 		chain.doFilter(request, response);

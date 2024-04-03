@@ -45,15 +45,9 @@ public class MainPageController {
 		return "Front/Login";
 	}
 
-	@GetMapping("/logout")
-	public String logout(HttpSession session) throws Exception {
-		session.invalidate();
-
-		return "redirect:/login";
-	}
-	@PostMapping("/main")
-	public String showPets(HttpSession session, @Valid User user, Errors errors, BindingResult bindingResult,
-			@ModelAttribute InventoryData inventoryAddData, Model model) throws Exception {
+	@PostMapping("/loginCheck")
+	public String membership(HttpSession session, @Valid User user, Errors errors, BindingResult bindingResult)
+			throws Exception {
 		//ログイン記述
 		if (bindingResult.hasErrors()) {
 			System.out.println("hasErrors");
@@ -67,6 +61,21 @@ public class MainPageController {
 		}
 		user = userMapper.selectUserByUserLogin(user.getUserLogin());
 		session.setAttribute("user", user);
+		return "redirect:/main";
+
+	}
+
+	@GetMapping("/logout")
+	public String logout(HttpSession session) throws Exception {
+		session.invalidate();
+
+		return "redirect:/login";
+	}
+
+	@GetMapping("/main")
+	public String showPets(HttpSession session, @ModelAttribute InventoryData inventoryAddData, Model model)
+			throws Exception {
+		User user = (User) session.getAttribute("user");
 
 		//各種データ準備
 		//ペットデータ
