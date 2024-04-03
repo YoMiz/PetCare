@@ -8,10 +8,16 @@
 	</select>
 	<select id="showContactForPet"
 		resultType="com.example.app.domain.ContactData">
-		SELECT * FROM pet_care_db.contact JOIN
-		pet_care_db.contact_type ON
-		contact.contact_type =
-		contact_type.contact_type_id WHERE pet_id =
-		#{petId}
+SELECT *
+	FROM pet_care_db.contact
+	JOIN
+	pet_care_db.contact_type
+	ON contact.contact_type =
+	contact_type.contact_type_id
+	JOIN
+	pet_care_db.pet_contact
+	ON contact.contact_id =
+	pet_contact.contact_id
+	WHERE pet_id = #{petId}
 	</select>
 </mapper>

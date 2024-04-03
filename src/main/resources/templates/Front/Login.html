@@ -7,7 +7,7 @@
 </head>
 
 <body>
-	<th:block th:unless="${session.userLogin}" class="error">	
+	<th:block  class="error">	<!-- th:if="${session.userLogin}" -->
 	<form action="/main" method="post" th:object="${user}">
 		<p>LoginId</p>
 		<input type="text" th:field="*{userLogin}" />
