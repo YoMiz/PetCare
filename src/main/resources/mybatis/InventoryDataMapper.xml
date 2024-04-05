@@ -8,17 +8,32 @@
 	</select>
 	<select id="showInventoryForPet"
 		resultType="com.example.app.domain.InventoryData">
-	SELECT *
-	FROM pet_care_db.inventory
-	JOIN
-	pet_care_db.inventory_type
-	ON inventory.inventory_type =
-	inventory_type.inventory_type_id
-	JOIN
-	pet_care_db.pet_inventory
-	ON inventory.inventory_id =
-	pet_inventory.inventory_id
-	WHERE pet_id = #{petId}
+		SELECT *
+		FROM pet_care_db.inventory
+		JOIN
+		pet_care_db.inventory_type
+		ON inventory.inventory_type =
+		inventory_type.inventory_type_id
+		JOIN
+		pet_care_db.pet_inventory
+		ON
+		inventory.inventory_id =
+		pet_inventory.inventory_id
+		WHERE pet_id =
+		#{petId}
 	</select>
-
+	<insert id="addInventory"
+		parameterType="com.example.app.domain.InventoryData"
+		useGeneratedKeys="true" keyProperty="inventoryId">
+		INSERT INTO pet_care_db.inventory (user_id, inventory_type, inventory_name,
+		inventory_amount, inventory_price, inventory_url)
+		VALUE
+		(#{userId}, #{inventoryType}, #{inventoryName}, #{inventoryAmount},
+		#{inventoryPrice}, #{inventoryUrl})
+	</insert>
+	<insert id="addPetInventory"
+		parameterType="com.example.app.domain.InventoryData">
+		INSERT INTO pet_care_db.pet_inventory(user_id, pet_id, inventory_id)
+		VALUE (#{userId}, #{petId}, #{inventoryId})
+	</insert>
 </mapper>

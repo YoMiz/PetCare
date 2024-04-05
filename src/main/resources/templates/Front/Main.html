@@ -17,7 +17,6 @@
 			<img src="/images/icon/paw.png" alt="" width="30px" height="30px" />
 			<h4>ペットメニュー</h4>
 		</div>
-
 		<button id="openbtn-inventory" class="openbtn" onclick="openNav('inventory')">
 			<img src="/images/icon/bone.png" alt="" width="30px" height="30px" />在庫メニュー　</button>
 		<div id="sidebar-inventory" class="sidebar">
@@ -47,9 +46,7 @@
 					<input type="submit" value="登録">
 				</form>
 			</div>
-
 		</div>
-
 		<button id="openbtn-contact" class="openbtn" onclick="openNav('contact')">
 			<img src="/images/icon/tel.png" alt="" width="30px" height="30px" />連絡メニュー　</button>
 		<div id="sidebar-contact" class="sidebar">
@@ -76,7 +73,6 @@
 				</div>
 				<!-- ここにペットのグラフを挿入 -->
 			</div>
-
 			<!-- 前後のアイテムに切り替えるためのボタン -->
 			<button class="carousel-control-prev" type="button" data-bs-target="#petCarousel" data-bs-slide="prev">
 				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -92,7 +88,6 @@
 					th:attr="data-petid=${petData.petId}" width="150px" height="150px">
 			</div>
 		</div>
-
 		<br />
 		<!-- ペットのアイテム・コンタクトデータ表示エリア -->
 		<div th:each="petData : ${petList}" class="inventory-list list" th:id="'inventory-list-' + ${petData.petId}">
@@ -109,19 +104,33 @@
 					</tr>
 				</thead>
 				<tbody th:each="inventory : ${petInventoryMap[petData.petId]}">
-					<tr>
-						<td th:text="${inventory.inventoryTypeName}"></td>
-						<td th:text="${inventory.inventoryName}"></td>
-						<td th:text="${inventory.inventoryAmount} + '　個'"></td>
-						<td th:text="${inventory.inventoryPrice} + '　円'"></td>
-						<td>変更</td>
-					</tr>
+					<form action="updateInventory" method="post" th:object="${updateInventoryData}">
+						<tr>
+							<td th:text="${inventory.inventoryTypeName}">
+								<input type="hidden" th:field="*{inventoryTypeName}"
+									th:value="${inventory.inventoryTypeName}" />
+							</td>
+							<td th:text="${inventory.inventoryName}">
+								<input type="hidden" th:field="*{inventoryName}"
+									th:value="${inventory.inventoryName}" />
+							</td>
+							<td th:text="${inventory.inventoryAmount} + '　個'">
+								<input type="hidden" th:field="*{inventoryAmount}"
+									th:value="${inventory.inventoryAmount}" />
+							</td>
+							<td th:text="${inventory.inventoryPrice} + '　円'">
+								<input type="hidden" th:field="*{inventoryPrice}"
+									th:value="${inventory.inventoryPrice}" />
+							</td>
+							<td>
+								<input type="submit" value="変更" />
+							</td>
+						</tr>
+					</form>
 				</tbody>
-				<td>追加</td>
 			</table>
 			<br />
 		</div>
-		<br />
 		<br />
 		<div th:each="petData:${petList}" class="contact-list list" th:id="'contact-list-' + ${petData.petId}">
 			<h2 th:text="${petData.petName} + '　連絡先リスト'" class="contents-header"></h2>
@@ -159,16 +168,13 @@
 			function openNav(menuType) {
 				document.getElementById('sidebar-' + menuType).style.left = "0";
 			}
-
 			// サイドバーを非表示にする関数
 			function closeNav(menuType) {
 				document.getElementById('sidebar-' + menuType).style.left = "-250px";
 			}
 		</script>
-		// BootstrapとjQueryのライブラリを読み込みます
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
 		<script>
 			window.onload = function () {
 				const petCarousel = document.getElementById('petCarousel');
@@ -223,7 +229,6 @@
 						$(petCarousel).off('slid.bs.carousel');
 					});
 				});
-
 				// 最初にアクティブにしたいペットIDを設定します。
 				const initialPetId = 0;
 
@@ -239,12 +244,7 @@
 				$('.contact-list').hide();
 				$('#contact-list-' + initialPetId).show();
 			};
-
 		</script>
-</body>
-
-</html>
-
 </body>
 
 </html>

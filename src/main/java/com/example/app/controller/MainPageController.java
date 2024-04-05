@@ -23,6 +23,7 @@ import com.example.app.mapper.ContactMapper;
 import com.example.app.mapper.InventoryMapper;
 import com.example.app.mapper.PetDataMapper;
 import com.example.app.mapper.UserMapper;
+import com.example.app.service.InventoryService;
 import com.example.app.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -34,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 public class MainPageController {
 	private final PetDataMapper petDataMapper;
 	private final InventoryMapper inventoryMapper;
+	private final InventoryService inventoryService;
 	private final ContactMapper contactMapper;
 	private final UserService userService;
 	private final UserMapper userMapper;
@@ -53,30 +55,25 @@ public class MainPageController {
 			System.out.println("hasErrors");
 			return "redirect:/login";
 		}
-
 		if (!userService.isCorrectIdAndPassword(user.getUserLogin(), user.getUserPassword())) {
 			bindingResult.rejectValue("userLogin", "error.incorrect_id_password");
 			System.out.println("incorrect");
 			return "redirect:/login";
 		}
-		user = userMapper.selectUserByUserLogin(user.getUserLogin());
+		String userLogin = user.getUserLogin();
+		user = userMapper.selectUserByUserLogin(userLogin);
 		session.setAttribute("user", user);
 		return "redirect:/main";
-
 	}
-
 	@GetMapping("/logout")
 	public String logout(HttpSession session) throws Exception {
 		session.invalidate();
-
 		return "redirect:/login";
 	}
-
 	@GetMapping("/main")
 	public String showPets(HttpSession session, @ModelAttribute InventoryData inventoryAddData, Model model)
 			throws Exception {
 		User user = (User) session.getAttribute("user");
-
 		//各種データ準備
 		//ペットデータ
 		List<PetData> petList = petDataMapper.showUserPetByUserId(user.getUserId());
@@ -120,8 +117,10 @@ public class MainPageController {
 	}
 
 	@PostMapping("/addInventory")
-	public String addInventory(@ModelAttribute InventoryData inventoryAddData) {
-		System.out.println(inventoryAddData);
+	public String addInventory(@ModelAttribute InventoryData inventoryAddData, HttpSession session) throws Exception{
+	    User user = (User)session.getAttribute("user");
+		Integer userId = user.getUserId();
+		inventoryService.addToInventory(userId, inventoryAddData);
 		return "redirect:/main";
 	}
 }
