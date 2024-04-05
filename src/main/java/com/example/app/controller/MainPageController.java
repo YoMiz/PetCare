@@ -133,9 +133,11 @@ public class MainPageController {
 	}
 
 	@PostMapping("/updateInventory")
-	public String updateInventory(@ModelAttribute InventoryData updateInventoryData, HttpSession session)
-			throws Exception {
-		System.out.println(updateInventoryData);
-		return "redirect:/main";
+	public String updateInventory(@ModelAttribute InventoryData inventoryData, HttpSession session) throws Exception {
+	   
+	    System.out.println(inventoryData);
+	    return "redirect:/main";
 	}
+
+
 }

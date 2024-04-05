@@ -104,33 +104,36 @@
 					</tr>
 				</thead>
 				<tbody th:each="inventory : ${petInventoryMap[petData.petId]}">
-					<form action="updateInventory" method="post" th:object="${updateInventoryData}">
-						<tr>
-							<td th:text="${inventory.inventoryTypeName}">
-								<input type="hidden" th:field="*{inventoryTypeName}"
+					<tr>
+						<form action="updateInventory" method="post">
+							<td>
+								<span th:text="${inventory.inventoryTypeName}"></span>
+								<input type="hidden" name="inventoryTypeName"
 									th:value="${inventory.inventoryTypeName}" />
 							</td>
-							<td th:text="${inventory.inventoryName}">
-								<input type="hidden" th:field="*{inventoryName}"
-									th:value="${inventory.inventoryName}" />
+							<td>
+								<span th:text="${inventory.inventoryName}"></span>
+								<input type="hidden" name="inventoryName" th:value="${inventory.inventoryName}" />
 							</td>
-							<td th:text="${inventory.inventoryAmount} + '　個'">
-								<input type="hidden" th:field="*{inventoryAmount}"
-									th:value="${inventory.inventoryAmount}" />
+							<td>
+								<span th:text="${inventory.inventoryAmount} + '　個'"></span>
+								<input type="hidden" name="inventoryAmount" th:value="${inventory.inventoryAmount}" />
 							</td>
-							<td th:text="${inventory.inventoryPrice} + '　円'">
-								<input type="hidden" th:field="*{inventoryPrice}"
-									th:value="${inventory.inventoryPrice}" />
+							<td>
+								<span th:text="${inventory.inventoryPrice} + '　円'"></span>
+								<input type="hidden" name="inventoryPrice" th:value="${inventory.inventoryPrice}" />
 							</td>
 							<td>
 								<input type="submit" value="変更" />
 							</td>
-						</tr>
-					</form>
+						</form>
+					</tr>
 				</tbody>
+
 			</table>
 			<br />
 		</div>
+
 		<br />
 		<div th:each="petData:${petList}" class="contact-list list" th:id="'contact-list-' + ${petData.petId}">
 			<h2 th:text="${petData.petName} + '　連絡先リスト'" class="contents-header"></h2>
