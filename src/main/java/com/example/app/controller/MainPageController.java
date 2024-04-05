@@ -55,6 +55,7 @@ public class MainPageController {
 			System.out.println("hasErrors");
 			return "redirect:/login";
 		}
+
 		if (!userService.isCorrectIdAndPassword(user.getUserLogin(), user.getUserPassword())) {
 			bindingResult.rejectValue("userLogin", "error.incorrect_id_password");
 			System.out.println("incorrect");
@@ -62,18 +63,24 @@ public class MainPageController {
 		}
 		String userLogin = user.getUserLogin();
 		user = userMapper.selectUserByUserLogin(userLogin);
+		user = userMapper.selectUserByUserLogin(user.getUserLogin());
 		session.setAttribute("user", user);
 		return "redirect:/main";
+
 	}
+
 	@GetMapping("/logout")
 	public String logout(HttpSession session) throws Exception {
 		session.invalidate();
+
 		return "redirect:/login";
 	}
+
 	@GetMapping("/main")
 	public String showPets(HttpSession session, @ModelAttribute InventoryData inventoryAddData, Model model)
 			throws Exception {
 		User user = (User) session.getAttribute("user");
+
 		//各種データ準備
 		//ペットデータ
 		List<PetData> petList = petDataMapper.showUserPetByUserId(user.getUserId());
@@ -121,6 +128,14 @@ public class MainPageController {
 	    User user = (User)session.getAttribute("user");
 		Integer userId = user.getUserId();
 		inventoryService.addToInventory(userId, inventoryAddData);
+		
+		return "redirect:/main";
+	}
+
+	@PostMapping("/updateInventory")
+	public String updateInventory(@ModelAttribute InventoryData updateInventoryData, HttpSession session)
+			throws Exception {
+		System.out.println(updateInventoryData);
 		return "redirect:/main";
 	}
 }

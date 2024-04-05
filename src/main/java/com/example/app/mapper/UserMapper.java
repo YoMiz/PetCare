@@ -14,4 +14,6 @@ public interface UserMapper {
 	User selectUserByUserLogin(String userLogin) throws Exception;
 	List<InventoryData> selectInventoryByUserId(Integer userId) throws Exception;
 	List<ContactData> selectContactByUserId(Integer userId) throws Exception;
+	
+	
 }
