@@ -10,4 +10,5 @@ import com.example.app.domain.ContactData;
 public interface ContactMapper {
 	List<ContactData> showContact() throws Exception;
 	List<ContactData> showContactForPet(int petId) throws Exception;
+	void addContact(ContactData newContactData) throws Exception;
 }
