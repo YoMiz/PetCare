@@ -27,20 +27,6 @@ body {
 	font-family: 'arial-black';
 }
 
-.openbtn:hover {
-	background-color: rgb(164, 142, 119);
-	width: 45px;
-	transition: 0.3s;
-	color: white;
-}
-
-#sidebar-menu button {
-	-webkit-writing-mode: vertical-rl;
-	-ms-writing-mode: tb-rl;
-	writing-mode: vertical-rl;
-	z-index: 7;
-}
-
 .closebtn {
 	font-size: 20px;
 	cursor: pointer;
