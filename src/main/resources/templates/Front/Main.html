@@ -10,50 +10,60 @@
 
 <body>
 	<div id="sidebar-menu">
-		<button id="openbtn-pet" class="openbtn" onclick="openNav('pet')"> <img src="/images/icon/paw.png" alt=""
-				width="30px" height="30px" />ペットメニュー　</button>
 		<div id="sidebar-pet" class="sidebar">
 			<button class="closebtn" onclick="closeNav('pet')">X</button>
 			<img src="/images/icon/paw.png" alt="" width="30px" height="30px" />
 			<h4>ペットメニュー</h4>
+			<form action="updateInventory" method="post">
+				<table>
+					<input type="hidden" value="" />
+					<tr>
+						<td>
+							<p>アイテム属性</p>
+							<input type="text" class="inventoryTypeName"
+								th:value="${inventory != null && inventory.inventoryTypeName != null ? inventory.inventoryTypeName : ''}" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>アイテム名</p>
+							<input type="text" class="inventoryName"
+								th:value="${inventory != null && inventory.inventoryName != null ? inventory.inventoryName : ''}" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>個数</p>
+							<input type="number" class="inventoryAmount"
+								th:value="${inventory != null && inventory.inventoryAmount != null ? inventory.inventoryAmount : ''}" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>値段 </p>
+							<input type="number" class="inventoryPrice"
+								th:value="${inventory != null && inventory.inventoryPrice != null ? inventory.inventoryPrice : ''}" />
+						</td>
+					</tr>
+				</table>
+				<input type="submit" value="更新" />
+			</form>
 		</div>
-		<button id="openbtn-inventory" class="openbtn" onclick="openNav('inventory')">
-			<img src="/images/icon/bone.png" alt="" width="30px" height="30px" />在庫メニュー　</button>
-		<div id="sidebar-inventory" class="sidebar">
-			<button class="closebtn" onclick="closeNav('inventory')">X</button>
-			<img src="/images/icon/bone.png" alt="" width="30px" height="30px" />
-			<h4>在庫メニュー</h4>
-			<div th:block th:object="${inventoryAddData}">
-				<form method="post" action="addInventory">
-					<p>対象ペット
-						<input type="text" th:field="*{petId}" />
-					</p>
-					<p>アイテム種類
-						<input type="text" th:field="*{inventoryType}" />
-					</p>
-					<p>アイテム名
-						<input type="text" th:field="*{inventoryName}" />
-					</p>
-					<p>　　個数　　
-						<input type="text" th:field="*{inventoryAmount}" />
-					</p>
-					<p>　　値段　　
-						<input type="text" th:field="*{inventoryPrice}" />
-					</p>
-					<p>　　URL　　
-						<input type="text" th:field="*{inventoryUrl}" />
-					</p>
-					<input type="submit" value="登録">
-				</form>
-			</div>
-		</div>
-		<button id="openbtn-contact" class="openbtn" onclick="openNav('contact')">
-			<img src="/images/icon/tel.png" alt="" width="30px" height="30px" />連絡メニュー　</button>
-		<div id="sidebar-contact" class="sidebar">
-			<button class="closebtn" onclick="closeNav('contact')">X</button>
-			<img src="/images/icon/tel.png" alt="" width="30px" height="30px" />
-			<h4>連絡先メニュー</h4>
-		</div>
+	</div>
+	<button id="openbtn-inventory" class="openbtn" onclick="openNav('inventory')">
+		<img src="/images/icon/bone.png" alt="" width="30px" height="30px" />在庫メニュー　</button>
+	<div id="sidebar-inventory" class="sidebar">
+		<button class="closebtn" onclick="closeNav('inventory')">X</button>
+		<img src="/images/icon/bone.png" alt="" width="30px" height="30px" />
+
+	</div>
+	<button id="openbtn-contact" class="openbtn" onclick="openNav('contact')">
+		<img src="/images/icon/tel.png" alt="" width="30px" height="30px" />連絡メニュー　</button>
+	<div id="sidebar-contact" class="sidebar">
+		<button class="closebtn" onclick="closeNav('contact')">X</button>
+		<img src="/images/icon/tel.png" alt="" width="30px" height="30px" />
+		<h4>連絡先メニュー</h4>
+	</div>
 	</div>
 	<main>
 		<a href="logout">ログアウト</a>
@@ -105,31 +115,25 @@
 				</thead>
 				<tbody th:each="inventory : ${petInventoryMap[petData.petId]}">
 					<tr>
-						<form action="updateInventory" method="post">
-							<td>
-								<span th:text="${inventory.inventoryTypeName}"></span>
-								<input type="hidden" name="inventoryTypeName"
-									th:value="${inventory.inventoryTypeName}" />
-							</td>
-							<td>
-								<span th:text="${inventory.inventoryName}"></span>
-								<input type="hidden" name="inventoryName" th:value="${inventory.inventoryName}" />
-							</td>
-							<td>
-								<span th:text="${inventory.inventoryAmount} + '　個'"></span>
-								<input type="hidden" name="inventoryAmount" th:value="${inventory.inventoryAmount}" />
-							</td>
-							<td>
-								<span th:text="${inventory.inventoryPrice} + '　円'"></span>
-								<input type="hidden" name="inventoryPrice" th:value="${inventory.inventoryPrice}" />
-							</td>
-							<td>
-								<input type="submit" value="変更" />
-							</td>
-						</form>
+						<input type="hidden" class="inventoryId" th:value="${inventory.inventoryId}" />
+						<input type="hidden" class="petId" th:value="${petData.petId}" />
+						<td>
+							<span th:text="${inventory.inventoryTypeName}" class="inventoryTypeName"></span>
+						</td>
+						<td>
+							<span th:text="${inventory.inventoryName}"></span>
+						</td>
+						<td>
+							<span th:text="${inventory.inventoryAmount} + '　個'"></span>
+						</td>
+						<td>
+							<span th:text="${inventory.inventoryPrice} + '　円'"></span>
+						</td>
+						<td>
+							<button id="openbtn-pet" class="openbtn" onclick="openNav('pet', event)">更新</button>
+						</td>
 					</tr>
 				</tbody>
-
 			</table>
 			<br />
 		</div>
@@ -167,9 +171,28 @@
 		</div>
 		<br />
 		<script>
-			// サイドバーを表示する関数
-			function openNav(menuType) {
+			// サイドバーを表示し、関連するinventoryIdを取得する関数
+			function openNav(menuType, event) {
+				// サイドバーを表示
 				document.getElementById('sidebar-' + menuType).style.left = "0";
+
+				// クリックされたボタンから最も近いtr要素を取得
+				var closestTr = event.currentTarget.closest('tr');
+
+				// tr要素内のinventoryIdを取得
+				var inventoryId = closestTr.querySelector('.inventoryId').value;
+
+				// 各パラメータを取得
+				var inventoryTypeName = closestTr.querySelector('.inventoryTypeName').textContent;
+				var inventoryName = closestTr.querySelector('.inventoryName').textContent;
+				var inventoryAmount = closestTr.querySelector('.inventoryAmount').textContent;
+				var inventoryPrice = closestTr.querySelector('.inventoryPrice').textContent;
+
+				// 取得したパラメータを反映させたい部分にセット
+				document.querySelector('input[name="inventoryTypeName"]').value = inventoryTypeName;
+				document.querySelector('input.inventoryName').value = inventoryName;
+				document.querySelector('input.inventoryAmount').value = inventoryAmount;
+				document.querySelector('input.inventoryPrice').value = inventoryPrice;
 			}
 			// サイドバーを非表示にする関数
 			function closeNav(menuType) {
