@@ -36,4 +36,8 @@
 		INSERT INTO pet_care_db.pet_inventory(user_id, pet_id, inventory_id)
 		VALUE (#{userId}, #{petId}, #{inventoryId})
 	</insert>
+	<select id="showPetByInventoryId" parameterType="Integer">
+		SELECT * FROM pet_care_db.pet_inventory 
+		WHERE inventory_id = #{inevntoryId}
+	</select>
 </mapper>

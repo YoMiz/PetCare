@@ -16,57 +16,61 @@
 			<h4>ペットメニュー</h4>
 			<form action="updateInventory" method="post">
 				<table>
-					<input type="hidden" class="inventoryId"
-						th:value="${inventory != null && inventory.inventoryId != null ? inventory.inventoryId : ''}" />
-					<input type="hidden" class="petId"
-						th:value="${petData != null && petData.petId != null ? petData.petId : ''}" />
-					<tr>
-						<td>
-							<p>アイテム属性</p>
-							<input type="text" class="inventoryTypeNameInput"
-								th:value="${inventory != null && inventory.inventoryTypeName != null ? inventory.inventoryTypeName : ''}" />
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<p>アイテム名</p>
-							<input type="text" class="inventoryNameInput"
-								th:value="${inventory != null && inventory.inventoryName != null ? inventory.inventoryName : ''}" />
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<p>個数</p>
-							<input type="number" class="inventoryAmountInput"
-								th:value="${inventory != null && inventory.inventoryAmount != null ? inventory.inventoryAmount : ''}" />
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<p>値段 </p>
-							<input type="number" class="inventoryPriceInput"
-								th:value="${inventory != null && inventory.inventoryPrice != null ? inventory.inventoryPrice : ''}" />
-						</td>
-					</tr>
+					<div th:block th:object="${inventoryUpdateData}">
+						<input type="hidden" class="inventoryIdInput" name="inventoryIdInput"
+							th:filed="*{inventoryId}" />
+						<tr>
+							<td>
+								<p>アイテム属性</p>
+								<input type="text" class="inventoryTypeNameInput" th:field="*{inventoryTypeName}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p>アイテム名</p>
+								<input type="text" class="inventoryNameInput" th:field="*{inventoryName}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p>個数</p>
+								<input type="number" class="inventoryAmountInput" th:field="*{inventoryAmount}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p>値段 </p>
+								<input type="number" class="inventoryPriceInput" th:field="*{inventoryPrice}" />
+							</td>
+						</tr>
+						<tr th:each="pet : ${petList}">
+							<td>
+								<input type="checkbox" th:id="${'pet-' + pet.petName}" th:name="${pet.petName}"
+									th:value="${pet.petName}" />
+								<label th:for="${'pet-' + pet.petName}" th:text="${pet.petName}"></label>
+							</td>
+						</tr>
+
+
+					</div>
 				</table>
 				<input type="submit" value="更新" />
 			</form>
 		</div>
-	</div>
-	<button id="openbtn-inventory" class="openbtn" onclick="openNav('inventory')">
-		<img src="/images/icon/bone.png" alt="" width="30px" height="30px" />在庫メニュー　</button>
-	<div id="sidebar-inventory" class="sidebar">
-		<button class="closebtn" onclick="closeNav('inventory')">X</button>
-		<img src="/images/icon/bone.png" alt="" width="30px" height="30px" />
+		<button id="openbtn-inventory" class="openbtn" onclick="openNav('inventory')">
+			<img src="/images/icon/bone.png" alt="" width="30px" height="30px" />在庫メニュー　</button>
+		<div id="sidebar-inventory" class="sidebar">
+			<button class="closebtn" onclick="closeNav('inventory')">X</button>
+			<img src="/images/icon/bone.png" alt="" width="30px" height="30px" />
 
-	</div>
-	<button id="openbtn-contact" class="openbtn" onclick="openNav('contact')">
-		<img src="/images/icon/tel.png" alt="" width="30px" height="30px" />連絡メニュー　</button>
-	<div id="sidebar-contact" class="sidebar">
-		<button class="closebtn" onclick="closeNav('contact')">X</button>
-		<img src="/images/icon/tel.png" alt="" width="30px" height="30px" />
-		<h4>連絡先メニュー</h4>
-	</div>
+		</div>
+		<button id="openbtn-contact" class="openbtn" onclick="openNav('contact')">
+			<img src="/images/icon/tel.png" alt="" width="30px" height="30px" />連絡メニュー　</button>
+		<div id="sidebar-contact" class="sidebar">
+			<button class="closebtn" onclick="closeNav('contact')">X</button>
+			<img src="/images/icon/tel.png" alt="" width="30px" height="30px" />
+			<h4>連絡先メニュー</h4>
+		</div>
 	</div>
 	<main>
 		<a href="logout">ログアウト</a>
@@ -118,9 +122,9 @@
 				</thead>
 				<tbody th:each="inventory : ${petInventoryMap[petData.petId]}">
 					<tr>
-						<input type="hidden" class="inventoryId" th:value="${inventory.inventoryId}" />
-						<input type="hidden" class="petId" th:value="${petData.petId}" />
+
 						<td>
+							<input type="hidden" class="inventoryId" th:value="${inventory.inventoryId}" />
 							<span th:text="${inventory.inventoryTypeName}" class="inventoryTypeName"></span>
 						</td>
 						<td>
@@ -185,12 +189,14 @@
 				var closestTr = event.currentTarget.closest('tr');
 
 				// 各パラメータを取得
+				var inventoryId = closestTr.querySelector('.inventoryId').value;
 				var inventoryTypeName = closestTr.querySelector('.inventoryTypeName').textContent;
 				var inventoryName = closestTr.querySelector('.inventoryName').textContent;
 				var inventoryAmount = closestTr.querySelector('.inventoryAmount').textContent.replace('　個', '');
 				var inventoryPrice = closestTr.querySelector('.inventoryPrice').textContent.replace('　円', '');
 
 				// 取得したパラメータを反映させたい部分にセット
+				document.querySelector('input.inventoryIdInput').value = inventoryId;
 				document.querySelector('input.inventoryTypeNameInput').value = inventoryTypeName;
 				document.querySelector('input.inventoryNameInput').value = inventoryName;
 				document.querySelector('input.inventoryAmountInput').value = inventoryAmount;
@@ -200,6 +206,7 @@
 			function closeNav(menuType) {
 				document.getElementById('sidebar-' + menuType).style.left = "-250px";
 			}
+
 		</script>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 		<script>

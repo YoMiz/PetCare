@@ -10,4 +10,8 @@
         JOIN pet_care_db.pet_status ON pet_data.pet_status = pet_status.status_id
         WHERE pet_data.user_id = #{userId}
     </select>
+    <select id="sowPetByPetId" resultType="com.example.app.domain.PetData">
+    	SELECT * FROM pet_care_db.pet_data
+    	WHERE pet_data.pet_id = #{petId}
+    </select>
 </mapper>
