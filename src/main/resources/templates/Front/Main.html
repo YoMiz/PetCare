@@ -45,13 +45,11 @@
 						</tr>
 						<tr th:each="pet : ${petList}">
 							<td>
-								<input type="checkbox" th:id="${'pet-' + pet.petName}" th:name="${pet.petName}"
-									th:value="${pet.petName}" />
+								<input type="checkbox" th:id="${'pet-' + pet.petName}" th:name="petIdList"
+									th:value="${pet.petId}" />
 								<label th:for="${'pet-' + pet.petName}" th:text="${pet.petName}"></label>
 							</td>
 						</tr>
-
-
 					</div>
 				</table>
 				<input type="submit" value="更新" />
@@ -207,6 +205,20 @@
 				document.getElementById('sidebar-' + menuType).style.left = "-250px";
 			}
 
+		</script>
+		<script>
+			var checkboxes = document.querySelectorAll('input[type=checkbox]');
+			for (var i = 0; i < checkboxes.length; i++) {
+				checkboxes[i].addEventListener('change', function () {
+					if (this.id === 'pet-All') {
+						for (var j = 0; j < checkboxes.length; j++) {
+							checkboxes[j].checked = this.checked;
+						}
+					} else if (!this.checked) {
+						document.getElementById('pet-All').checked = false;
+					}
+				});
+			}
 		</script>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 		<script>
