@@ -14,6 +14,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.app.domain.ContactData;
 import com.example.app.domain.InventoryData;
@@ -77,7 +78,7 @@ public class MainPageController {
 	}
 
 	@GetMapping("/main")
-	public String showPets(HttpSession session, @ModelAttribute InventoryData inventoryAddData, Model model)
+	public String showPets(HttpSession session, @ModelAttribute InventoryData inventoryUpdateData, Model model)
 			throws Exception {
 		User user = (User) session.getAttribute("user");
 
@@ -119,25 +120,29 @@ public class MainPageController {
 		model.addAttribute("petIdList", petIdList);
 		model.addAttribute("petInventoryMap", petInventoryMap);
 		model.addAttribute("petContactMap", petContactMap);
-		model.addAttribute("inventoryAddData", inventoryAddData);
+		model.addAttribute("inventoryUpdateData", inventoryUpdateData);
 		return "Front/Main";
 	}
 
 	@PostMapping("/addInventory")
-	public String addInventory(@ModelAttribute InventoryData inventoryAddData, HttpSession session) throws Exception{
-	    User user = (User)session.getAttribute("user");
+	public String addInventory(@ModelAttribute InventoryData inventoryAddData, HttpSession session) throws Exception {
+		User user = (User) session.getAttribute("user");
 		Integer userId = user.getUserId();
 		inventoryService.addToInventory(userId, inventoryAddData);
-		
+
 		return "redirect:/main";
 	}
 
 	@PostMapping("/updateInventory")
-	public String updateInventory(@ModelAttribute InventoryData inventoryData, HttpSession session) throws Exception {
-	   
-	    System.out.println(inventoryData);
+	public String updateInventory(@ModelAttribute InventoryData inventoryUpdateData, Integer inventoryIdInput, @RequestParam List<Integer> petIdList,
+	        HttpSession session) throws Exception {
+	    User user = (User)session.getAttribute("user");
+	    Integer userId = user.getUserId();
+	    
+	    for(Integer petId : petIdList) {
+	    	inventoryMapper.updateInventory(inventoryUpdateData);
+	    }
+	    
 	    return "redirect:/main";
 	}
-
-
 }
