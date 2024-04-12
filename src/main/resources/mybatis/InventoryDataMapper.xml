@@ -54,6 +54,16 @@
 		#{inventoryName},#{inventoryAmount},#{inventoryPrice}) WHERE
 		inventory.inventory_id = #{inventoryId}
 	</update>
-	<update id="updatePetInventory">
-	</update>
+	<select id="findPetInventoryByUserId" parameterType="Integer">
+		SELECT CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END
+		FROM pet_inventory
+		WHERE user_id = #{userId}
+	</select>
+	<select id="findPetInventoryByPetId" parameterType="Integer">
+		SELECT CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END
+		FROM
+		pet_inventory
+		WHERE pet_id = #{petId}
+	</select>
+
 </mapper>

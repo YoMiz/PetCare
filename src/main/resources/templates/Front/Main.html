@@ -120,7 +120,6 @@
 				</thead>
 				<tbody th:each="inventory : ${petInventoryMap[petData.petId]}">
 					<tr>
-
 						<td>
 							<input type="hidden" class="inventoryId" th:value="${inventory.inventoryId}" />
 							<span th:text="${inventory.inventoryTypeName}" class="inventoryTypeName"></span>

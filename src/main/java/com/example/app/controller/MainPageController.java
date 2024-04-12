@@ -105,13 +105,13 @@ public class MainPageController {
 			int petId = pet.getPetId();
 			petIdList.add(petId); // リストにpetIdを追加します
 
-			//０番が上書きされる為、後程、０を足す
+			//0番が上書きされる為、後程、0を足す
 			List<InventoryData> petInventory = inventoryMapper.showInventoryForPet(petId);
 			petInventoryMap.put(petId, petInventory);
 			List<ContactData> petContact = contactMapper.showContactForPet(petId);
 			petContactMap.put(petId, petContact);
 		}
-		//配列に０番データを足す
+		//配列に0番データを足す
 		petInventoryMap.put(0, allInventoryList);
 		petContactMap.put(0, allContactList);
 
@@ -134,15 +134,39 @@ public class MainPageController {
 	}
 
 	@PostMapping("/updateInventory")
-	public String updateInventory(@ModelAttribute InventoryData inventoryUpdateData, Integer inventoryIdInput, @RequestParam List<Integer> petIdList,
-	        HttpSession session) throws Exception {
-	    User user = (User)session.getAttribute("user");
-	    Integer userId = user.getUserId();
-	    
-	    for(Integer petId : petIdList) {
-	    	inventoryMapper.updateInventory(inventoryUpdateData);
-	    }
-	    
-	    return "redirect:/main";
+	public String updateInventory(@ModelAttribute InventoryData inventoryUpdateData, Integer inventoryIdInput,
+			@RequestParam List<Integer> petIdList,
+			HttpSession session) throws Exception {
+		User user = (User) session.getAttribute("user");
+		Integer userId = user.getUserId();
+		
+		//checkが外れた場合、DBから論理削除する。
+		//仕組みの概要：
+		//userIdに登録されているアイテムを検索（ユーザー間での重複対策）
+		//pet_idにアイテムを検索。登録されていない場合は新規登録
+		//登録されている場合は、activate(0→1)する。
+		boolean flgUserIdExist = inventoryMapper.findPetInventoryByUserId(userId);
+		if (flgUserIdExist = true) {
+			for (Integer petId : petIdList) {
+				boolean flgPetIdExist = inventoryMapper.findPetInventoryByPetId(petId);
+				if(flgPetIdExist != true) {
+					inventoryUpdateData.setUserId(userId);
+					inventoryUpdateData.setPetId(petId);
+					inventoryMapper.addPetInventory(inventoryUpdateData);
+				}
+			}
+		}
+		inventoryMapper.updateInventory(inventoryUpdateData);
+
+		return "redirect:/main";
 	}
+	//更新ボタン押下後、pet_inventoryに記録されている且つ、
+	//activeが１の場合、
+	//html上のチェックボックスにチェックを入れる。
+	@GetMapping("/petInventoryChecker")
+	public List<Integer> checkInventoryPetList(InventoryData inventoryUpdateData) throws Exception {
+	    List<Integer> inventoryPetCheckList = inventoryMapper.inventoryPetCheckList(inventoryUpdateData.getInventoryId());
+	    return inventoryPetCheckList;
+	}
+
 }
