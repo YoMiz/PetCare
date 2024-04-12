@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+</head>
+
+<body>
+	<h4>在庫メニュー</h4>
+	<div th:block th:object="${inventoryAddData}">
+		<form method="post" action="addInventory">
+			<p>対象ペット
+				<input type="text" th:field="*{petId}" />
+			</p>
+			<p>アイテム種類
+				<input type="text" th:field="*{inventoryType}" />
+			</p>
+			<p>アイテム名
+				<input type="text" th:field="*{inventoryName}" />
+			</p>
+			<p>　　個数　　
+				<input type="text" th:field="*{inventoryAmount}" />
+			</p>
+			<p>　　値段　　
+				<input type="text" th:field="*{inventoryPrice}" />
+			</p>
+			<p>　　URL　　
+				<input type="text" th:field="*{inventoryUrl}" />
+			</p>
+			<input type="submit" value="登録">
+		</form>
+	</div>
+</body>
+
+</html>

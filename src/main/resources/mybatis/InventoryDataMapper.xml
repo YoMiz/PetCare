@@ -25,15 +25,45 @@
 	<insert id="addInventory"
 		parameterType="com.example.app.domain.InventoryData"
 		useGeneratedKeys="true" keyProperty="inventoryId">
-		INSERT INTO pet_care_db.inventory (user_id, inventory_type, inventory_name,
-		inventory_amount, inventory_price, inventory_url)
+		INSERT INTO pet_care_db.inventory
+		(user_id, inventory_type, inventory_name,
+		inventory_amount,
+		inventory_price, inventory_url)
 		VALUE
-		(#{userId}, #{inventoryType}, #{inventoryName}, #{inventoryAmount},
-		#{inventoryPrice}, #{inventoryUrl})
+		(#{userId}, #{inventoryType},
+		#{inventoryName}, #{inventoryAmount},
+		#{inventoryPrice},
+		#{inventoryUrl})
 	</insert>
 	<insert id="addPetInventory"
 		parameterType="com.example.app.domain.InventoryData">
-		INSERT INTO pet_care_db.pet_inventory(user_id, pet_id, inventory_id)
+		INSERT INTO pet_care_db.pet_inventory(user_id, pet_id,
+		inventory_id)
 		VALUE (#{userId}, #{petId}, #{inventoryId})
 	</insert>
+	<select id="showPetByInventoryId" parameterType="Integer">
+		SELECT * FROM
+		pet_care_db.pet_inventory
+		WHERE inventory_id = #{inevntoryId}
+	</select>
+	<update id="updateInventory" parameterType="Integer">
+		UPDATE
+		pet_care_db.inventory (inventory_type, inventory_name,
+		inventory_amount, inventory_price)
+		VALUE (#{inventoryType},
+		#{inventoryName},#{inventoryAmount},#{inventoryPrice}) WHERE
+		inventory.inventory_id = #{inventoryId}
+	</update>
+	<select id="findPetInventoryByUserId" parameterType="Integer">
+		SELECT CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END
+		FROM pet_inventory
+		WHERE user_id = #{userId}
+	</select>
+	<select id="findPetInventoryByPetId" parameterType="Integer">
+		SELECT CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END
+		FROM
+		pet_inventory
+		WHERE pet_id = #{petId}
+	</select>
+
 </mapper>
