@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Testing Page</title>
+</head>
+
+<body>
+	<form action="/test" th:action="@{/submit}" method="post">
+		<div th:each="entry : ${testList}">
+			<input type="checkbox" th:id="${entry.key}" th:value="${entry.key}" th:checked="${entry.value}" />
+			<label th:for="${entry.key}">Key: <span th:text="${entry.key}"></span>, Value: <span
+					th:text="${entry.value} ? 'True' : 'False'"></span></label>
+		</div>
+		<input type="submit" value="Submit">
+	</form>
+	<input type="number" id="num" />
+	<button id="chg-btn" class="chg-btn" onclick="change-checkbox('item',event)">更新</button>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+	$(document).ready(function () {
+		var num = document.getElementById('num');
+		var checkboxes = document.querySelectorAll('input[type=checkbox]');
+
+		$('#chg-btn').click(function () {
+			var index = num.value - 1;
+			if (index < checkboxes.length) {
+				if (!checkboxes[index].checked) {
+					checkboxes[index].checked = true;
+				} else {
+					checkboxes[index].checked = false;
+				}
+			} else {
+				console.log("Invalid index. Please enter a number between 0 and " + (checkboxes.length - 1));
+			}
+		});
+	});
+</script>
+
+</script>
+
+</html>

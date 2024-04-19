@@ -16,9 +16,9 @@
 			<h4>ペットメニュー</h4>
 			<form action="updateInventory" method="post">
 				<table>
-					<div th:block th:object="${inventoryUpdateData}">
+					<div th:block th:object="${selectedInventoryData}">
 						<input type="hidden" class="inventoryIdInput" name="inventoryIdInput"
-							th:filed="*{inventoryId}" />
+							th:field="*{inventoryId}" />
 						<tr>
 							<td>
 								<p>アイテム属性</p>
@@ -45,9 +45,9 @@
 						</tr>
 						<tr th:each="pet : ${petList}">
 							<td>
-								<input type="checkbox" th:id="${'pet-' + pet.petName}" th:name="petIdList"
+								<input type="checkbox" th:id="'pet-' + ${pet.petName}" th:name="petIdList"
 									th:value="${pet.petId}" />
-								<label th:for="${'pet-' + pet.petName}" th:text="${pet.petName}"></label>
+								<label th:for="'pet-' + ${pet.petName}" th:text="${pet.petName}"></label>
 							</td>
 						</tr>
 					</div>
@@ -174,52 +174,64 @@
 			<br />
 		</div>
 		<br />
-
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script>
-			// サイドバーを表示し、関連するinventoryIdを取得する関数
-			function openNav(menuType, event) {
-				// サイドバーを表示
-				document.getElementById('sidebar-' + menuType).style.left = "0";
+			$(document).ready(function () {
+				window.openNav = function (menuType, event) {
+					document.getElementById('sidebar-' + menuType).style.left = "0";
+					var trElement = event.target.closest('tr');
+					var inventoryId = trElement.querySelector('.inventoryId').getAttribute('value');
+					document.querySelector('input.inventoryIdInput').value = inventoryId;
+					console.log(inventoryId);
+					$.ajax({
+						url: '/getSelectedInventoryData',
+						type: 'GET',
+						data: {'selectedInventoryId': inventoryId},
+						success: function (response) {
+							document.querySelector('input.inventoryTypeNameInput').value = response.inventoryTypeName;
+							document.querySelector('input.inventoryNameInput').value = response.inventoryName;
+							document.querySelector('input.inventoryAmountInput').value = response.inventoryAmount;
+							document.querySelector('input.inventoryPriceInput').value = response.inventoryPrice;
 
-				// クリックされたボタンから最も近いtr要素を取得
-				var closestTr = event.currentTarget.closest('tr');
-
-				// 各パラメータを取得
-				var inventoryId = closestTr.querySelector('.inventoryId').value;
-				var inventoryTypeName = closestTr.querySelector('.inventoryTypeName').textContent;
-				var inventoryName = closestTr.querySelector('.inventoryName').textContent;
-				var inventoryAmount = closestTr.querySelector('.inventoryAmount').textContent.replace('　個', '');
-				var inventoryPrice = closestTr.querySelector('.inventoryPrice').textContent.replace('　円', '');
-
-				// 取得したパラメータを反映させたい部分にセット
-				document.querySelector('input.inventoryIdInput').value = inventoryId;
-				document.querySelector('input.inventoryTypeNameInput').value = inventoryTypeName;
-				document.querySelector('input.inventoryNameInput').value = inventoryName;
-				document.querySelector('input.inventoryAmountInput').value = inventoryAmount;
-				document.querySelector('input.inventoryPriceInput').value = inventoryPrice;
-			}
-			// サイドバーを非表示にする関数
-			function closeNav(menuType) {
-				document.getElementById('sidebar-' + menuType).style.left = "-250px";
-			}
-
-		</script>
-		<script>
-			var checkboxes = document.querySelectorAll('input[type=checkbox]');
-			for (var i = 0; i < checkboxes.length; i++) {
-				checkboxes[i].addEventListener('change', function () {
-					if (this.id === 'pet-All') {
-						for (var j = 0; j < checkboxes.length; j++) {
-							checkboxes[j].checked = this.checked;
+							// inventoryPetActiveListを反映
+							if (response.hasOwnProperty('inventoryPetActiveList')) {
+								var inventoryPetActiveList = response.inventoryPetActiveList;
+								var checkboxes = document.querySelectorAll('input[type=checkbox]');
+								console.log(checkboxes);
+								console.log(inventoryPetActiveList);
+								for (var i = 0; i < checkboxes.length; i++) {
+									var petId = checkboxes[i].value; // valueを使用
+									if (inventoryPetActiveList.hasOwnProperty(petId)) {
+										checkboxes[i].checked = inventoryPetActiveList[petId];
+									}
+								}
+							} else {
+								console.error('inventoryPetActiveList is not defined in the response');
+							}
 						}
-					} else if (!this.checked) {
-						document.getElementById('pet-All').checked = false;
-					}
-				});
-			}
+					});
+				}
+				window.closeNav = function (menuType) {
+					document.getElementById('sidebar-' + menuType).style.left = "-250px";
+				};
+
+				var checkboxes = document.querySelectorAll('input[type=checkbox]');
+				for (var i = 0; i < checkboxes.length; i++) {
+					checkboxes[i].addEventListener('change', function () {
+						if (this.id === 'pet-All') {
+							for (var j = 0; j < checkboxes.length; j++) {
+								checkboxes[j].checked = this.checked;
+							}
+						} else if (!this.checked) {
+							document.getElementById('pet-All').checked = false;
+						}
+					});
+				}
+			});
 		</script>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+		</script>
 		<script>
 			window.onload = function () {
 				const petCarousel = document.getElementById('petCarousel');

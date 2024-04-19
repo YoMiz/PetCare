@@ -22,6 +22,15 @@
 		WHERE pet_id =
 		#{petId}
 	</select>
+	<select id="getInventoryByInventoryId"
+		resultType="com.example.app.domain.InventoryData">
+		SELECT *
+		FROM inventory
+		JOIN inventory_type
+		ON inventory.inventory_type =
+		inventory_type.inventory_type_id
+		WHERE inventory.inventory_id = #{inventoryId}
+	</select>
 	<insert id="addInventory"
 		parameterType="com.example.app.domain.InventoryData"
 		useGeneratedKeys="true" keyProperty="inventoryId">
@@ -43,9 +52,9 @@
 	</insert>
 	<select id="showPetByInventoryId" parameterType="Integer">
 		SELECT * FROM
-		pet_care_db.pet_inventory
-		WHERE inventory_id = #{inevntoryId}
+		pet_care_db.pet_inventory WHERE inventory_id = #{inventoryId}
 	</select>
+
 	<update id="updateInventory" parameterType="Integer">
 		UPDATE
 		pet_care_db.inventory (inventory_type, inventory_name,
@@ -55,15 +64,28 @@
 		inventory.inventory_id = #{inventoryId}
 	</update>
 	<select id="findPetInventoryByUserId" parameterType="Integer">
-		SELECT CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END
+		SELECT CASE
+		WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END
 		FROM pet_inventory
-		WHERE user_id = #{userId}
+		WHERE
+		user_id = #{userId}
 	</select>
 	<select id="findPetInventoryByPetId" parameterType="Integer">
-		SELECT CASE WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END
+		SELECT CASE
+		WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END
 		FROM
 		pet_inventory
-		WHERE pet_id = #{petId}
+		WHERE
+		pet_id = #{petId}
 	</select>
+	<select id="inventoryPetCheckList"
+		resultType="com.example.app.domain.InventoryData">
+		SELECT * FROM pet_inventory JOIN inventory ON
+		pet_inventory.inventory_id =
+		inventory.inventory_id WHERE
+		pet_inventory.inventory_id =
+		#{inventoryId}
+	</select>
+
 
 </mapper>
