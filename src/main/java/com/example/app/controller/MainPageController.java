@@ -134,49 +134,48 @@ public class MainPageController {
 		return "redirect:/main";
 	}
 
+	@PostMapping("/addInventory")
+	public String addInventory() throws Exception{
+		//アイテム登録時にユーザー保有のペット全てのpet_inventoryにデータを作成する。
+		//checkboxからデータを抽出して、該当するペットに１を振る。
+		return "redirect/main";
+	}
 	@PostMapping("/updateInventory")
-	public String updateInventory(@ModelAttribute InventoryData inventoryUpdateData, Integer inventoryIdInput,
+	public String updateInventory(@ModelAttribute InventoryData selectedInventoryData, Integer inventoryIdInput,
 			@RequestParam List<Integer> petIdList,
 			HttpSession session) throws Exception {
 		User user = (User) session.getAttribute("user");
 		Integer userId = user.getUserId();
 		
 		//checkが外れた場合、DBから論理削除する。
-		//仕組みの概要：
 		//userIdに登録されているアイテムを検索（ユーザー間での重複対策）
-		//pet_idにアイテムを検索。登録されていない場合は新規登録
-		//登録されている場合は、activate(0→1)する。
 		boolean flgUserIdExist = inventoryMapper.findPetInventoryByUserId(userId);
 		if (flgUserIdExist = true) {
 			for (Integer petId : petIdList) {
 				boolean flgPetIdExist = inventoryMapper.findPetInventoryByPetId(petId);
+				//pet_idにアイテムを検索。
 				if(flgPetIdExist != true) {
-					inventoryUpdateData.setUserId(userId);
-					inventoryUpdateData.setPetId(petId);
-					inventoryMapper.addPetInventory(inventoryUpdateData);
+					selectedInventoryData.setUserId(userId);
+					selectedInventoryData.setPetId(petId);
+					inventoryMapper.addPetInventory(selectedInventoryData);
 				}
 			}
 		}
-		inventoryMapper.updateInventory(inventoryUpdateData);
-
+		//登録されている場合は、activate(0→1)する。
+		inventoryMapper.updateInventory(selectedInventoryData);
 		return "redirect:/main";
 	}
-	//更新ボタン押下後、pet_inventoryに記録されている且つ、
-	//activeが１の場合、
-	//html上のチェックボックスにチェックを入れる。
-	@GetMapping("/petInventoryChecker")
-	public List<InventoryData> checkInventoryPetList(InventoryData inventoryUpdateData) throws Exception {
-	    List<InventoryData> inventoryPetCheckList = inventoryMapper.inventoryPetCheckList(inventoryUpdateData.getInventoryId());
-	    System.out.println(inventoryPetCheckList);
-	    return inventoryPetCheckList;
-	}
+
+	//Ajaxにて選択されたインベントリのデータを取得
 	@GetMapping("/getSelectedInventoryData")
 	@ResponseBody
 	public InventoryData selectedInventoryData(Integer selectedInventoryId) throws Exception {
 	    InventoryData selectedInventoryData = inventoryMapper.getInventoryByInventoryId(selectedInventoryId);
 	    return selectedInventoryData;
 	}
-
+	//Ajaxにてボタン押下後、pet_inventoryに記録されている且つ、
+	//activeが１の場合、
+	//html上のチェックボックスにチェックを入れる。
 	@GetMapping("/getInventoryPetActiveList")
 	@ResponseBody
 	public Map<Integer, Boolean> inventoryPetActiveList(Integer selectedInventoryId) throws Exception {
@@ -185,7 +184,6 @@ public class MainPageController {
 	    for(InventoryData activePet : inventoryPetCheckList) {
 	        inventoryPetActiveList.put(activePet.getPetId(), true);
 	    }
-	    System.out.println(inventoryPetActiveList);
 	    return inventoryPetActiveList;
 	}
 }
