@@ -193,25 +193,28 @@
 							document.querySelector('input.inventoryNameInput').value = response.inventoryName;
 							document.querySelector('input.inventoryAmountInput').value = response.inventoryAmount;
 							document.querySelector('input.inventoryPriceInput').value = response.inventoryPrice;
+						}
+					});
 
-							// inventoryPetActiveListを反映
-							if (response.hasOwnProperty('inventoryPetActiveList')) {
-								var inventoryPetActiveList = response.inventoryPetActiveList;
-								var checkboxes = document.querySelectorAll('input[type=checkbox]');
-								console.log(checkboxes);
-								console.log(inventoryPetActiveList);
-								for (var i = 0; i < checkboxes.length; i++) {
-									var petId = checkboxes[i].value; // valueを使用
-									if (inventoryPetActiveList.hasOwnProperty(petId)) {
-										checkboxes[i].checked = inventoryPetActiveList[petId];
-									}
+					$.ajax({
+						url: '/getInventoryPetActiveList',
+						type: 'GET',
+						data: {'selectedInventoryId': inventoryId},
+						success: function (response) {
+							var inventoryPetActiveList = response;
+							var checkboxes = document.querySelectorAll('input[type=checkbox]');
+							console.log(checkboxes);
+							console.log(inventoryPetActiveList);
+							for (var i = 0; i < checkboxes.length; i++) {
+								var petId = checkboxes[i].value; // valueを使用
+								if (inventoryPetActiveList.hasOwnProperty(petId)) {
+									checkboxes[i].checked = inventoryPetActiveList[petId];
 								}
-							} else {
-								console.error('inventoryPetActiveList is not defined in the response');
 							}
 						}
 					});
 				}
+
 				window.closeNav = function (menuType) {
 					document.getElementById('sidebar-' + menuType).style.left = "-250px";
 				};
@@ -230,7 +233,6 @@
 				}
 			});
 		</script>
-
 		</script>
 		<script>
 			window.onload = function () {

@@ -172,14 +172,20 @@ public class MainPageController {
 	}
 	@GetMapping("/getSelectedInventoryData")
 	@ResponseBody
-	public InventoryData selectedInventoryData(Model model, Integer selectedInventoryId) throws Exception {
-		InventoryData selectedInventoryData = inventoryMapper.getInventoryByInventoryId(selectedInventoryId);
-		List<InventoryData> inventoryPetCheckList  = inventoryMapper.inventoryPetCheckList(selectedInventoryId);
-		Map<Integer, Boolean> inventoryPetActiveList = new HashMap<>();
-		for(InventoryData activePet : inventoryPetCheckList) {
-			inventoryPetActiveList.put(activePet.getPetId(), true);
-		}
-		System.out.println(inventoryPetActiveList);
-		return selectedInventoryData;
+	public InventoryData selectedInventoryData(Integer selectedInventoryId) throws Exception {
+	    InventoryData selectedInventoryData = inventoryMapper.getInventoryByInventoryId(selectedInventoryId);
+	    return selectedInventoryData;
+	}
+
+	@GetMapping("/getInventoryPetActiveList")
+	@ResponseBody
+	public Map<Integer, Boolean> inventoryPetActiveList(Integer selectedInventoryId) throws Exception {
+	    List<InventoryData> inventoryPetCheckList  = inventoryMapper.inventoryPetCheckList(selectedInventoryId);
+	    Map<Integer, Boolean> inventoryPetActiveList = new HashMap<>();
+	    for(InventoryData activePet : inventoryPetCheckList) {
+	        inventoryPetActiveList.put(activePet.getPetId(), true);
+	    }
+	    System.out.println(inventoryPetActiveList);
+	    return inventoryPetActiveList;
 	}
 }
