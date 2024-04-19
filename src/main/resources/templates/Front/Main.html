@@ -179,6 +179,12 @@
 		<script>
 			$(document).ready(function () {
 				window.openNav = function (menuType, event) {
+					// Clear all checkboxes
+					var checkboxes = document.querySelectorAll('input[type=checkbox]');
+					for (var i = 0; i < checkboxes.length; i++) {
+						checkboxes[i].checked = false;
+					}
+
 					document.getElementById('sidebar-' + menuType).style.left = "0";
 					var trElement = event.target.closest('tr');
 					var inventoryId = trElement.querySelector('.inventoryId').getAttribute('value');
@@ -195,44 +201,57 @@
 							document.querySelector('input.inventoryPriceInput').value = response.inventoryPrice;
 						}
 					});
-
 					$.ajax({
 						url: '/getInventoryPetActiveList',
 						type: 'GET',
 						data: {'selectedInventoryId': inventoryId},
 						success: function (response) {
 							var inventoryPetActiveList = response;
-							var checkboxes = document.querySelectorAll('input[type=checkbox]');
-							console.log(checkboxes);
-							console.log(inventoryPetActiveList);
+							var allChecked = true;
 							for (var i = 0; i < checkboxes.length; i++) {
 								var petId = checkboxes[i].value; // valueを使用
 								if (inventoryPetActiveList.hasOwnProperty(petId)) {
 									checkboxes[i].checked = inventoryPetActiveList[petId];
+									if (!checkboxes[i].checked) {
+										allChecked = false;
+									}
 								}
+							}
+							if (allChecked) {
+								document.getElementById('pet-All').checked = true;
 							}
 						}
 					});
 				}
-
 				window.closeNav = function (menuType) {
 					document.getElementById('sidebar-' + menuType).style.left = "-250px";
 				};
 
-				var checkboxes = document.querySelectorAll('input[type=checkbox]');
 				for (var i = 0; i < checkboxes.length; i++) {
 					checkboxes[i].addEventListener('change', function () {
 						if (this.id === 'pet-All') {
 							for (var j = 0; j < checkboxes.length; j++) {
 								checkboxes[j].checked = this.checked;
 							}
-						} else if (!this.checked) {
-							document.getElementById('pet-All').checked = false;
+						} else {
+							// Check if all checkboxes are checked
+							var allChecked = true;
+							for (var j = 0; j < checkboxes.length; j++) {
+								if (checkboxes[j].id !== 'pet-All' && !checkboxes[j].checked) {
+									allChecked = false;
+									break;
+								}
+							}
+							// If all checkboxes are checked, check 'pet-All'
+							if (allChecked) {
+								document.getElementById('pet-All').checked = true;
+							} else {
+								document.getElementById('pet-All').checked = false;
+							}
 						}
 					});
 				}
 			});
-		</script>
 		</script>
 		<script>
 			window.onload = function () {
