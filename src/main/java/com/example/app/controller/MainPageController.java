@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.app.domain.ContactData;
 import com.example.app.domain.InventoryData;
@@ -78,10 +79,9 @@ public class MainPageController {
 	}
 
 	@GetMapping("/main")
-	public String showPets(HttpSession session, @ModelAttribute InventoryData inventoryUpdateData, Model model)
+	public String showPets(HttpSession session, @ModelAttribute InventoryData selectedInventoryData, Model model)
 			throws Exception {
 		User user = (User) session.getAttribute("user");
-
 		//各種データ準備
 		//ペットデータ
 		List<PetData> petList = petDataMapper.showUserPetByUserId(user.getUserId());
@@ -91,7 +91,8 @@ public class MainPageController {
 		Date date = formatter.parse("2000/1/1");
 		PetData allPetsData = new PetData(0, "All", 0, 0, date, "All.jpg", date, date, "none", 0, 0, 0);
 		petList.add(0, allPetsData);
-
+		
+		
 		//インベントリデータ準備
 		Map<Integer, List<InventoryData>> petInventoryMap = new HashMap<>();
 		List<InventoryData> allInventoryList = userMapper.selectInventoryByUserId(user.getUserId());
@@ -114,13 +115,13 @@ public class MainPageController {
 		//配列に0番データを足す
 		petInventoryMap.put(0, allInventoryList);
 		petContactMap.put(0, allContactList);
-
+		
 		//データを渡す
 		model.addAttribute("petList", petList);
 		model.addAttribute("petIdList", petIdList);
 		model.addAttribute("petInventoryMap", petInventoryMap);
 		model.addAttribute("petContactMap", petContactMap);
-		model.addAttribute("inventoryUpdateData", inventoryUpdateData);
+		model.addAttribute("selectedInventoryData", selectedInventoryData);
 		return "Front/Main";
 	}
 
@@ -164,9 +165,27 @@ public class MainPageController {
 	//activeが１の場合、
 	//html上のチェックボックスにチェックを入れる。
 	@GetMapping("/petInventoryChecker")
-	public List<Integer> checkInventoryPetList(InventoryData inventoryUpdateData) throws Exception {
-	    List<Integer> inventoryPetCheckList = inventoryMapper.inventoryPetCheckList(inventoryUpdateData.getInventoryId());
+	public List<InventoryData> checkInventoryPetList(InventoryData inventoryUpdateData) throws Exception {
+	    List<InventoryData> inventoryPetCheckList = inventoryMapper.inventoryPetCheckList(inventoryUpdateData.getInventoryId());
+	    System.out.println(inventoryPetCheckList);
 	    return inventoryPetCheckList;
 	}
+	@GetMapping("/getSelectedInventoryData")
+	@ResponseBody
+	public InventoryData selectedInventoryData(Integer selectedInventoryId) throws Exception {
+	    InventoryData selectedInventoryData = inventoryMapper.getInventoryByInventoryId(selectedInventoryId);
+	    return selectedInventoryData;
+	}
 
+	@GetMapping("/getInventoryPetActiveList")
+	@ResponseBody
+	public Map<Integer, Boolean> inventoryPetActiveList(Integer selectedInventoryId) throws Exception {
+	    List<InventoryData> inventoryPetCheckList  = inventoryMapper.inventoryPetCheckList(selectedInventoryId);
+	    Map<Integer, Boolean> inventoryPetActiveList = new HashMap<>();
+	    for(InventoryData activePet : inventoryPetCheckList) {
+	        inventoryPetActiveList.put(activePet.getPetId(), true);
+	    }
+	    System.out.println(inventoryPetActiveList);
+	    return inventoryPetActiveList;
+	}
 }
