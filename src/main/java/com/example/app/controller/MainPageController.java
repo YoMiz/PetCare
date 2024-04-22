@@ -79,7 +79,7 @@ public class MainPageController {
 	}
 
 	@GetMapping("/main")
-	public String showPets(HttpSession session, @ModelAttribute InventoryData selectedInventoryData, Model model)
+	public String showPets(HttpSession session, @ModelAttribute InventoryData selectedInventoryData, @ModelAttribute InventoryData newInventoryData, Model model)
 			throws Exception {
 		User user = (User) session.getAttribute("user");
 		//各種データ準備
@@ -91,7 +91,6 @@ public class MainPageController {
 		Date date = formatter.parse("2000/1/1");
 		PetData allPetsData = new PetData(0, "All", 0, 0, date, "All.jpg", date, date, "none", 0, 0, 0);
 		petList.add(0, allPetsData);
-		
 		
 		//インベントリデータ準備
 		Map<Integer, List<InventoryData>> petInventoryMap = new HashMap<>();
@@ -122,6 +121,7 @@ public class MainPageController {
 		model.addAttribute("petInventoryMap", petInventoryMap);
 		model.addAttribute("petContactMap", petContactMap);
 		model.addAttribute("selectedInventoryData", selectedInventoryData);
+		model.addAttribute("newInventoryData", newInventoryData);
 		return "Front/Main";
 	}
 
@@ -129,17 +129,11 @@ public class MainPageController {
 	public String addInventory(@ModelAttribute InventoryData inventoryAddData, HttpSession session) throws Exception {
 		User user = (User) session.getAttribute("user");
 		Integer userId = user.getUserId();
+		//inventoryに追加した際に、inventoryIdを取得する。
 		inventoryService.addToInventory(userId, inventoryAddData);
-
 		return "redirect:/main";
 	}
 
-	@PostMapping("/addInventory")
-	public String addInventory() throws Exception{
-		//アイテム登録時にユーザー保有のペット全てのpet_inventoryにデータを作成する。
-		//checkboxからデータを抽出して、該当するペットに１を振る。
-		return "redirect/main";
-	}
 	@PostMapping("/updateInventory")
 	public String updateInventory(@ModelAttribute InventoryData selectedInventoryData, Integer inventoryIdInput,
 			@RequestParam List<Integer> petIdList,

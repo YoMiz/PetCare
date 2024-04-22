@@ -10,10 +10,46 @@
 
 <body>
 	<div id="sidebar-menu">
-		<div id="sidebar-pet" class="sidebar">
-			<button class="closebtn" onclick="closeNav('pet')">X</button>
-			<img src="/images/icon/paw.png" alt="" width="30px" height="30px" />
-			<h4>ペットメニュー</h4>
+		<div id="sidebar-inventory-add" class="sidebar">
+			<button class="closebtn" onclick="closeNav('inventory-add')"> X</button>
+			<img= src"/images/icon/bone.png" alt="" width="30px" height="30px" />
+			<h4>在庫メニュー</h4>
+			<form action="addInventory" method="post">
+				<table>
+					<div th:block th:object="${newInventoryData}">
+						<tr>
+							<td><input type="text" th:field="*{inventoryName}" /></td>
+						</tr>
+						<tr>
+							<td><input type="checkbox" th:field="*{inventoryTypeName}" value="1" /></td>
+						</tr>
+						<tr>
+							<td><input type="checkbox" th:field="*{inventoryTypeName}" value="2" /></td>
+						</tr>
+						<tr>
+							<td><input type="checkbox" th:field="*{inventoryTypeName}" value="3" /></td>
+						</tr>
+						<tr>
+							<td><input type="number" th:field="*{inventoryAmount}" min="0"></td>
+						</tr>
+						<tr>
+							<td><input type="number" th:field="*{inventoryPrice}"></td>
+						</tr>
+						<tr th:each="pet : ${petList}">
+							<td>
+								<input type="checkbox" th:id="'pet-' + ${pet.petName}" th:name="petIdList"
+									th:value="${pet.petId}" />
+								<label th:for="'pet-' + ${pet.petName}" th:text="${pet.petName}"></label>
+							</td>
+						</tr>
+					</div>
+				</table>
+			</form>
+		</div>
+		<div id="sidebar-inventory-update" class="sidebar">
+			<button class="closebtn" onclick="closeNav('inventory-update')">X</button>
+			<img src="/images/icon/bone.png" alt="" width="30px" height="30px" />
+			<h4>在庫メニュー</h4>
 			<form action="updateInventory" method="post">
 				<table>
 					<div th:block th:object="${selectedInventoryData}">
@@ -55,11 +91,11 @@
 				<input type="submit" value="更新" />
 			</form>
 		</div>
-		<button id="openbtn-inventory" class="openbtn" onclick="openNav('inventory')">
-			<img src="/images/icon/bone.png" alt="" width="30px" height="30px" />在庫メニュー　</button>
-		<div id="sidebar-inventory" class="sidebar">
-			<button class="closebtn" onclick="closeNav('inventory')">X</button>
-			<img src="/images/icon/bone.png" alt="" width="30px" height="30px" />
+		<button id="openbtn-pet" class="openbtn" onclick="openNav('pet')">
+			<img src="/images/icon/paw.png" alt="" width="30px" height="30px" />ペットメニュー　</button>
+		<div id="sidebar-pet" class="sidebar">
+			<button class="closebtn" onclick="closeNav('pet')">X</button>
+			<img src="/images/icon/paw.png" alt="" width="30px" height="30px" />
 
 		</div>
 		<button id="openbtn-contact" class="openbtn" onclick="openNav('contact')">
@@ -134,11 +170,13 @@
 							<span th:text="${inventory.inventoryPrice}" class="inventoryPrice"></span>
 						</td>
 						<td>
-							<button id="openbtn-pet" class="openbtn" onclick="openNav('pet', event)">更新</button>
+							<button id="openbtn-inventory" class="openbtn"
+								onclick="openNav('inventory-update', event)">更新</button>
 						</td>
 					</tr>
 				</tbody>
 			</table>
+			<button id="openbtn-inventory" class="openbtn" onclick="openNav('inventory-add', event)" width="200px">追加</button>
 			<br />
 		</div>
 
@@ -166,7 +204,8 @@
 						<td th:text="${contact.contactTel}"></td>
 						<td th:text="${contact.contactMail}"></td>
 						<td th:text="${contact.contactUrl}"></td>
-						<td>変更</td>
+						<td><button id="openbtn-contact" class="openbtn"
+								onclick="openNav('contact-update', event)">更新</button></td>
 					</tr>
 				</tbody>
 				<td>追加</td>
@@ -178,9 +217,11 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script>
 			$(document).ready(function () {
+				var checkboxes = document.querySelectorAll('input[type=checkbox]');
+				var petAll = document.getElementById('pet-All');
+
 				window.openNav = function (menuType, event) {
 					// Clear all checkboxes
-					var checkboxes = document.querySelectorAll('input[type=checkbox]');
 					for (var i = 0; i < checkboxes.length; i++) {
 						checkboxes[i].checked = false;
 					}
@@ -217,9 +258,7 @@
 									}
 								}
 							}
-							if (allChecked) {
-								document.getElementById('pet-All').checked = true;
-							}
+							document.getElementById('pet-All').checked = allChecked;
 						}
 					});
 				}
@@ -230,24 +269,16 @@
 				for (var i = 0; i < checkboxes.length; i++) {
 					checkboxes[i].addEventListener('change', function () {
 						if (this.id === 'pet-All') {
+							var isChecked = this.checked;
 							for (var j = 0; j < checkboxes.length; j++) {
-								checkboxes[j].checked = this.checked;
+								checkboxes[j].checked = isChecked;
 							}
 						} else {
 							// Check if all checkboxes are checked
-							var allChecked = true;
-							for (var j = 0; j < checkboxes.length; j++) {
-								if (checkboxes[j].id !== 'pet-All' && !checkboxes[j].checked) {
-									allChecked = false;
-									break;
-								}
-							}
-							// If all checkboxes are checked, check 'pet-All'
-							if (allChecked) {
-								document.getElementById('pet-All').checked = true;
-							} else {
-								document.getElementById('pet-All').checked = false;
-							}
+							var allChecked = Array.from(checkboxes).every(function (checkbox) {
+								return checkbox.id === 'pet-All' || checkbox.checked;
+							});
+							petAll.checked = allChecked;
 						}
 					});
 				}
