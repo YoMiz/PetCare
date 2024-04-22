@@ -10,15 +10,51 @@
 
 <body>
 	<div id="sidebar-menu">
-		<div id="sidebar-pet" class="sidebar">
-			<button class="closebtn" onclick="closeNav('pet')">X</button>
-			<img src="/images/icon/paw.png" alt="" width="30px" height="30px" />
-			<h4>ペットメニュー</h4>
+		<div id="sidebar-inventory-add" class="sidebar">
+			<button class="closebtn" onclick="closeNav('inventory-add')"> X</button>
+			<img= src"/images/icon/bone.png" alt="" width="30px" height="30px" />
+			<h4>在庫メニュー</h4>
+			<form action="addInventory" method="post">
+				<table>
+					<div th:block th:object="${newInventoryData}">
+						<tr>
+							<td><input type="text" th:field="*{inventoryName}" /></td>
+						</tr>
+						<tr>
+							<td><input type="checkbox" th:field="*{inventoryTypeName}" value="1" /></td>
+						</tr>
+						<tr>
+							<td><input type="checkbox" th:field="*{inventoryTypeName}" value="2" /></td>
+						</tr>
+						<tr>
+							<td><input type="checkbox" th:field="*{inventoryTypeName}" value="3" /></td>
+						</tr>
+						<tr>
+							<td><input type="number" th:field="*{inventoryAmount}" min="0"></td>
+						</tr>
+						<tr>
+							<td><input type="number" th:field="*{inventoryPrice}"></td>
+						</tr>
+						<tr th:each="pet : ${petList}">
+							<td>
+								<input type="checkbox" th:id="'pet-' + ${pet.petName}" th:name="petIdList"
+									th:value="${pet.petId}" />
+								<label th:for="'pet-' + ${pet.petName}" th:text="${pet.petName}"></label>
+							</td>
+						</tr>
+					</div>
+				</table>
+			</form>
+		</div>
+		<div id="sidebar-inventory-update" class="sidebar">
+			<button class="closebtn" onclick="closeNav('inventory-update')">X</button>
+			<img src="/images/icon/bone.png" alt="" width="30px" height="30px" />
+			<h4>在庫メニュー</h4>
 			<form action="updateInventory" method="post">
 				<table>
-					<div th:block th:object="${inventoryUpdateData}">
+					<div th:block th:object="${selectedInventoryData}">
 						<input type="hidden" class="inventoryIdInput" name="inventoryIdInput"
-							th:filed="*{inventoryId}" />
+							th:field="*{inventoryId}" />
 						<tr>
 							<td>
 								<p>アイテム属性</p>
@@ -45,9 +81,9 @@
 						</tr>
 						<tr th:each="pet : ${petList}">
 							<td>
-								<input type="checkbox" th:id="${'pet-' + pet.petName}" th:name="petIdList"
+								<input type="checkbox" th:id="'pet-' + ${pet.petName}" th:name="petIdList"
 									th:value="${pet.petId}" />
-								<label th:for="${'pet-' + pet.petName}" th:text="${pet.petName}"></label>
+								<label th:for="'pet-' + ${pet.petName}" th:text="${pet.petName}"></label>
 							</td>
 						</tr>
 					</div>
@@ -55,11 +91,11 @@
 				<input type="submit" value="更新" />
 			</form>
 		</div>
-		<button id="openbtn-inventory" class="openbtn" onclick="openNav('inventory')">
-			<img src="/images/icon/bone.png" alt="" width="30px" height="30px" />在庫メニュー　</button>
-		<div id="sidebar-inventory" class="sidebar">
-			<button class="closebtn" onclick="closeNav('inventory')">X</button>
-			<img src="/images/icon/bone.png" alt="" width="30px" height="30px" />
+		<button id="openbtn-pet" class="openbtn" onclick="openNav('pet')">
+			<img src="/images/icon/paw.png" alt="" width="30px" height="30px" />ペットメニュー　</button>
+		<div id="sidebar-pet" class="sidebar">
+			<button class="closebtn" onclick="closeNav('pet')">X</button>
+			<img src="/images/icon/paw.png" alt="" width="30px" height="30px" />
 
 		</div>
 		<button id="openbtn-contact" class="openbtn" onclick="openNav('contact')">
@@ -120,7 +156,6 @@
 				</thead>
 				<tbody th:each="inventory : ${petInventoryMap[petData.petId]}">
 					<tr>
-
 						<td>
 							<input type="hidden" class="inventoryId" th:value="${inventory.inventoryId}" />
 							<span th:text="${inventory.inventoryTypeName}" class="inventoryTypeName"></span>
@@ -135,11 +170,13 @@
 							<span th:text="${inventory.inventoryPrice}" class="inventoryPrice"></span>
 						</td>
 						<td>
-							<button id="openbtn-pet" class="openbtn" onclick="openNav('pet', event)">更新</button>
+							<button id="openbtn-inventory" class="openbtn"
+								onclick="openNav('inventory-update', event)">更新</button>
 						</td>
 					</tr>
 				</tbody>
 			</table>
+			<button id="openbtn-inventory" class="openbtn" onclick="openNav('inventory-add', event)" width="200px">追加</button>
 			<br />
 		</div>
 
@@ -167,7 +204,8 @@
 						<td th:text="${contact.contactTel}"></td>
 						<td th:text="${contact.contactMail}"></td>
 						<td th:text="${contact.contactUrl}"></td>
-						<td>変更</td>
+						<td><button id="openbtn-contact" class="openbtn"
+								onclick="openNav('contact-update', event)">更新</button></td>
 					</tr>
 				</tbody>
 				<td>追加</td>
@@ -175,52 +213,77 @@
 			<br />
 		</div>
 		<br />
-
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script>
-			// サイドバーを表示し、関連するinventoryIdを取得する関数
-			function openNav(menuType, event) {
-				// サイドバーを表示
-				document.getElementById('sidebar-' + menuType).style.left = "0";
+			$(document).ready(function () {
+				var checkboxes = document.querySelectorAll('input[type=checkbox]');
+				var petAll = document.getElementById('pet-All');
 
-				// クリックされたボタンから最も近いtr要素を取得
-				var closestTr = event.currentTarget.closest('tr');
-
-				// 各パラメータを取得
-				var inventoryId = closestTr.querySelector('.inventoryId').value;
-				var inventoryTypeName = closestTr.querySelector('.inventoryTypeName').textContent;
-				var inventoryName = closestTr.querySelector('.inventoryName').textContent;
-				var inventoryAmount = closestTr.querySelector('.inventoryAmount').textContent.replace('　個', '');
-				var inventoryPrice = closestTr.querySelector('.inventoryPrice').textContent.replace('　円', '');
-
-				// 取得したパラメータを反映させたい部分にセット
-				document.querySelector('input.inventoryIdInput').value = inventoryId;
-				document.querySelector('input.inventoryTypeNameInput').value = inventoryTypeName;
-				document.querySelector('input.inventoryNameInput').value = inventoryName;
-				document.querySelector('input.inventoryAmountInput').value = inventoryAmount;
-				document.querySelector('input.inventoryPriceInput').value = inventoryPrice;
-			}
-			// サイドバーを非表示にする関数
-			function closeNav(menuType) {
-				document.getElementById('sidebar-' + menuType).style.left = "-250px";
-			}
-
-		</script>
-		<script>
-			var checkboxes = document.querySelectorAll('input[type=checkbox]');
-			for (var i = 0; i < checkboxes.length; i++) {
-				checkboxes[i].addEventListener('change', function () {
-					if (this.id === 'pet-All') {
-						for (var j = 0; j < checkboxes.length; j++) {
-							checkboxes[j].checked = this.checked;
-						}
-					} else if (!this.checked) {
-						document.getElementById('pet-All').checked = false;
+				window.openNav = function (menuType, event) {
+					// Clear all checkboxes
+					for (var i = 0; i < checkboxes.length; i++) {
+						checkboxes[i].checked = false;
 					}
-				});
-			}
+
+					document.getElementById('sidebar-' + menuType).style.left = "0";
+					var trElement = event.target.closest('tr');
+					var inventoryId = trElement.querySelector('.inventoryId').getAttribute('value');
+					document.querySelector('input.inventoryIdInput').value = inventoryId;
+					console.log(inventoryId);
+					$.ajax({
+						url: '/getSelectedInventoryData',
+						type: 'GET',
+						data: {'selectedInventoryId': inventoryId},
+						success: function (response) {
+							document.querySelector('input.inventoryTypeNameInput').value = response.inventoryTypeName;
+							document.querySelector('input.inventoryNameInput').value = response.inventoryName;
+							document.querySelector('input.inventoryAmountInput').value = response.inventoryAmount;
+							document.querySelector('input.inventoryPriceInput').value = response.inventoryPrice;
+						}
+					});
+					$.ajax({
+						url: '/getInventoryPetActiveList',
+						type: 'GET',
+						data: {'selectedInventoryId': inventoryId},
+						success: function (response) {
+							var inventoryPetActiveList = response;
+							var allChecked = true;
+							for (var i = 0; i < checkboxes.length; i++) {
+								var petId = checkboxes[i].value; // valueを使用
+								if (inventoryPetActiveList.hasOwnProperty(petId)) {
+									checkboxes[i].checked = inventoryPetActiveList[petId];
+									if (!checkboxes[i].checked) {
+										allChecked = false;
+									}
+								}
+							}
+							document.getElementById('pet-All').checked = allChecked;
+						}
+					});
+				}
+				window.closeNav = function (menuType) {
+					document.getElementById('sidebar-' + menuType).style.left = "-250px";
+				};
+
+				for (var i = 0; i < checkboxes.length; i++) {
+					checkboxes[i].addEventListener('change', function () {
+						if (this.id === 'pet-All') {
+							var isChecked = this.checked;
+							for (var j = 0; j < checkboxes.length; j++) {
+								checkboxes[j].checked = isChecked;
+							}
+						} else {
+							// Check if all checkboxes are checked
+							var allChecked = Array.from(checkboxes).every(function (checkbox) {
+								return checkbox.id === 'pet-All' || checkbox.checked;
+							});
+							petAll.checked = allChecked;
+						}
+					});
+				}
+			});
 		</script>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 		<script>
 			window.onload = function () {
 				const petCarousel = document.getElementById('petCarousel');

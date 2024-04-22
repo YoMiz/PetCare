@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.app.domain.ContactData;
 import com.example.app.domain.InventoryData;
@@ -78,10 +79,9 @@ public class MainPageController {
 	}
 
 	@GetMapping("/main")
-	public String showPets(HttpSession session, @ModelAttribute InventoryData inventoryUpdateData, Model model)
+	public String showPets(HttpSession session, @ModelAttribute InventoryData selectedInventoryData, @ModelAttribute InventoryData newInventoryData, Model model)
 			throws Exception {
 		User user = (User) session.getAttribute("user");
-
 		//各種データ準備
 		//ペットデータ
 		List<PetData> petList = petDataMapper.showUserPetByUserId(user.getUserId());
@@ -91,7 +91,7 @@ public class MainPageController {
 		Date date = formatter.parse("2000/1/1");
 		PetData allPetsData = new PetData(0, "All", 0, 0, date, "All.jpg", date, date, "none", 0, 0, 0);
 		petList.add(0, allPetsData);
-
+		
 		//インベントリデータ準備
 		Map<Integer, List<InventoryData>> petInventoryMap = new HashMap<>();
 		List<InventoryData> allInventoryList = userMapper.selectInventoryByUserId(user.getUserId());
@@ -105,22 +105,23 @@ public class MainPageController {
 			int petId = pet.getPetId();
 			petIdList.add(petId); // リストにpetIdを追加します
 
-			//０番が上書きされる為、後程、０を足す
+			//0番が上書きされる為、後程、0を足す
 			List<InventoryData> petInventory = inventoryMapper.showInventoryForPet(petId);
 			petInventoryMap.put(petId, petInventory);
 			List<ContactData> petContact = contactMapper.showContactForPet(petId);
 			petContactMap.put(petId, petContact);
 		}
-		//配列に０番データを足す
+		//配列に0番データを足す
 		petInventoryMap.put(0, allInventoryList);
 		petContactMap.put(0, allContactList);
-
+		
 		//データを渡す
 		model.addAttribute("petList", petList);
 		model.addAttribute("petIdList", petIdList);
 		model.addAttribute("petInventoryMap", petInventoryMap);
 		model.addAttribute("petContactMap", petContactMap);
-		model.addAttribute("inventoryUpdateData", inventoryUpdateData);
+		model.addAttribute("selectedInventoryData", selectedInventoryData);
+		model.addAttribute("newInventoryData", newInventoryData);
 		return "Front/Main";
 	}
 
@@ -128,21 +129,55 @@ public class MainPageController {
 	public String addInventory(@ModelAttribute InventoryData inventoryAddData, HttpSession session) throws Exception {
 		User user = (User) session.getAttribute("user");
 		Integer userId = user.getUserId();
+		//inventoryに追加した際に、inventoryIdを取得する。
 		inventoryService.addToInventory(userId, inventoryAddData);
-
 		return "redirect:/main";
 	}
 
 	@PostMapping("/updateInventory")
-	public String updateInventory(@ModelAttribute InventoryData inventoryUpdateData, Integer inventoryIdInput, @RequestParam List<Integer> petIdList,
-	        HttpSession session) throws Exception {
-	    User user = (User)session.getAttribute("user");
-	    Integer userId = user.getUserId();
-	    
-	    for(Integer petId : petIdList) {
-	    	inventoryMapper.updateInventory(inventoryUpdateData);
+	public String updateInventory(@ModelAttribute InventoryData selectedInventoryData, Integer inventoryIdInput,
+			@RequestParam List<Integer> petIdList,
+			HttpSession session) throws Exception {
+		User user = (User) session.getAttribute("user");
+		Integer userId = user.getUserId();
+		
+		//checkが外れた場合、DBから論理削除する。
+		//userIdに登録されているアイテムを検索（ユーザー間での重複対策）
+		boolean flgUserIdExist = inventoryMapper.findPetInventoryByUserId(userId);
+		if (flgUserIdExist = true) {
+			for (Integer petId : petIdList) {
+				boolean flgPetIdExist = inventoryMapper.findPetInventoryByPetId(petId);
+				//pet_idにアイテムを検索。
+				if(flgPetIdExist != true) {
+					selectedInventoryData.setUserId(userId);
+					selectedInventoryData.setPetId(petId);
+					inventoryMapper.addPetInventory(selectedInventoryData);
+				}
+			}
+		}
+		//登録されている場合は、activate(0→1)する。
+		inventoryMapper.updateInventory(selectedInventoryData);
+		return "redirect:/main";
+	}
+
+	//Ajaxにて選択されたインベントリのデータを取得
+	@GetMapping("/getSelectedInventoryData")
+	@ResponseBody
+	public InventoryData selectedInventoryData(Integer selectedInventoryId) throws Exception {
+	    InventoryData selectedInventoryData = inventoryMapper.getInventoryByInventoryId(selectedInventoryId);
+	    return selectedInventoryData;
+	}
+	//Ajaxにてボタン押下後、pet_inventoryに記録されている且つ、
+	//activeが１の場合、
+	//html上のチェックボックスにチェックを入れる。
+	@GetMapping("/getInventoryPetActiveList")
+	@ResponseBody
+	public Map<Integer, Boolean> inventoryPetActiveList(Integer selectedInventoryId) throws Exception {
+	    List<InventoryData> inventoryPetCheckList  = inventoryMapper.inventoryPetCheckList(selectedInventoryId);
+	    Map<Integer, Boolean> inventoryPetActiveList = new HashMap<>();
+	    for(InventoryData activePet : inventoryPetCheckList) {
+	        inventoryPetActiveList.put(activePet.getPetId(), true);
 	    }
-	    
-	    return "redirect:/main";
+	    return inventoryPetActiveList;
 	}
 }

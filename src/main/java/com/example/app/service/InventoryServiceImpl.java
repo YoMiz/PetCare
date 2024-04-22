@@ -15,7 +15,7 @@ public class InventoryServiceImpl implements InventoryService {
 	@Override
 	public void addToInventory(Integer userId, InventoryData inventoryAddData) throws Exception {
 	    inventoryAddData.setUserId(userId);
-	    inventoryMapper.addInventory(inventoryAddData);
+	    Integer inventoryId =inventoryMapper.addInventory(inventoryAddData);
 	    inventoryMapper.addPetInventory(inventoryAddData);
 	}
 }
