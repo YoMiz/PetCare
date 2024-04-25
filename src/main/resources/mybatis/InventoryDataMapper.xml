@@ -54,7 +54,6 @@
 		SELECT * FROM
 		pet_care_db.pet_inventory WHERE inventory_id = #{inventoryId}
 	</select>
-
 	<update id="updateInventory" parameterType="Integer">
 		UPDATE
 		pet_care_db.inventory (inventory_type, inventory_name,
@@ -86,6 +85,4 @@
 		pet_inventory.inventory_id =
 		#{inventoryId}
 	</select>
-
-
 </mapper>

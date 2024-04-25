@@ -12,7 +12,7 @@ public interface InventoryMapper {
 	Integer addInventory(InventoryData newInventoryData) throws Exception;
 	void addPetInventory(InventoryData inventoryAddData) throws Exception;
 	List<Integer> showPetByInventoryId(Integer inventoryId) throws Exception;
-	void updateInventory(InventoryData inventoryUpdateData) throws Exception;
+	void updateInventory(Integer integer) throws Exception;
 	boolean findPetInventoryByUserId(Integer userId) throws Exception;
 	boolean findPetInventoryByPetId(Integer petId) throws Exception;
 	List<InventoryData> inventoryPetCheckList(Integer inventoryId) throws Exception;

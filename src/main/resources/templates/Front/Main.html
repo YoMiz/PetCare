@@ -14,26 +14,29 @@
 			<button class="closebtn" onclick="closeNav('inventory-add')"> X</button>
 			<img= src"/images/icon/bone.png" alt="" width="30px" height="30px" />
 			<h4>在庫メニュー</h4>
-			<form action="addInventory" method="post">
+			<form action="/addInventory" method="post">
 				<table>
 					<div th:block th:object="${newInventoryData}">
 						<tr>
 							<td><input type="text" th:field="*{inventoryName}" /></td>
 						</tr>
 						<tr>
-							<td><input type="checkbox" th:field="*{inventoryTypeName}" value="1" /></td>
+							<td><input type="radio" th:field="*{inventoryType}" value="1" />フード</td>
 						</tr>
 						<tr>
-							<td><input type="checkbox" th:field="*{inventoryTypeName}" value="2" /></td>
+							<td><input type="radio" th:field="*{inventoryType}" value="2" />雑貨</td>
 						</tr>
 						<tr>
-							<td><input type="checkbox" th:field="*{inventoryTypeName}" value="3" /></td>
+							<td><input type="radio" th:field="*{inventoryType}" value="3" />薬</td>
 						</tr>
 						<tr>
-							<td><input type="number" th:field="*{inventoryAmount}" min="0"></td>
+							<td><input type="radio" th:field="*{inventoryType}" value="4" />その他</td>
 						</tr>
 						<tr>
-							<td><input type="number" th:field="*{inventoryPrice}"></td>
+							<td><input type="number" th:field="*{inventoryAmount}" min="1"></td>
+						</tr>
+						<tr>
+							<td><input type="number" th:field="*{inventoryPrice}" min="0"></td>
 						</tr>
 						<tr th:each="pet : ${petList}">
 							<td>
@@ -42,6 +45,7 @@
 								<label th:for="'pet-' + ${pet.petName}" th:text="${pet.petName}"></label>
 							</td>
 						</tr>
+						<input type="submit" value="追加"/>
 					</div>
 				</table>
 			</form>
@@ -50,7 +54,7 @@
 			<button class="closebtn" onclick="closeNav('inventory-update')">X</button>
 			<img src="/images/icon/bone.png" alt="" width="30px" height="30px" />
 			<h4>在庫メニュー</h4>
-			<form action="updateInventory" method="post">
+			<form action="/updateInventory" method="post">
 				<table>
 					<div th:block th:object="${selectedInventoryData}">
 						<input type="hidden" class="inventoryIdInput" name="inventoryIdInput"
@@ -91,20 +95,7 @@
 				<input type="submit" value="更新" />
 			</form>
 		</div>
-		<button id="openbtn-pet" class="openbtn" onclick="openNav('pet')">
-			<img src="/images/icon/paw.png" alt="" width="30px" height="30px" />ペットメニュー　</button>
-		<div id="sidebar-pet" class="sidebar">
-			<button class="closebtn" onclick="closeNav('pet')">X</button>
-			<img src="/images/icon/paw.png" alt="" width="30px" height="30px" />
 
-		</div>
-		<button id="openbtn-contact" class="openbtn" onclick="openNav('contact')">
-			<img src="/images/icon/tel.png" alt="" width="30px" height="30px" />連絡メニュー　</button>
-		<div id="sidebar-contact" class="sidebar">
-			<button class="closebtn" onclick="closeNav('contact')">X</button>
-			<img src="/images/icon/tel.png" alt="" width="30px" height="30px" />
-			<h4>連絡先メニュー</h4>
-		</div>
 	</div>
 	<main>
 		<a href="logout">ログアウト</a>
@@ -114,7 +105,6 @@
 					th:classappend="${stat.first} ? 'active' : ''">
 					<img th:src="@{'/images/' + ${petData.petPhoto}}" class="d-block d-block-image" alt="Pet Photo"
 						th:attr="data-petid=${petData.petId}">
-
 					<div class="carousel-caption d-none d-md-block">
 						<h5 th:text="${petData.petName}"></h5>
 						<p>Age: <span th:text="${petData.petAge}"></span></p>
@@ -176,7 +166,8 @@
 					</tr>
 				</tbody>
 			</table>
-			<button id="openbtn-inventory" class="openbtn" onclick="openNav('inventory-add', event)" width="200px">追加</button>
+			<button id="openbtn-inventory" class="openbtn" onclick="openNav('inventory-add', event)"
+				width="200px">追加</button>
 			<br />
 		</div>
 
@@ -217,7 +208,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script>
 			$(document).ready(function () {
-				var checkboxes = document.querySelectorAll('input[type=checkbox]');
+				var checkboxes = document.querySelectorAll('input[name=petIdList]');
 				var petAll = document.getElementById('pet-All');
 
 				window.openNav = function (menuType, event) {

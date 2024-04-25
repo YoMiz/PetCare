@@ -13,9 +13,10 @@ public class InventoryServiceImpl implements InventoryService {
 	private final InventoryMapper inventoryMapper;
 
 	@Override
-	public void addToInventory(Integer userId, InventoryData inventoryAddData) throws Exception {
+	public Integer addToInventory(Integer userId, InventoryData inventoryAddData) throws Exception {
 	    inventoryAddData.setUserId(userId);
 	    Integer inventoryId =inventoryMapper.addInventory(inventoryAddData);
-	    inventoryMapper.addPetInventory(inventoryAddData);
+	    //inventoryMapper.addPetInventory(inventoryAddData);
+	    return inventoryId;
 	}
 }
