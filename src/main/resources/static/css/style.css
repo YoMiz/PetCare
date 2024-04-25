@@ -16,17 +16,30 @@ body {
 	z-index: 9;
 }
 
-.openbtn {
+.openbtn{
 	font-size: 19px;
 	background-color: rgb(149, 114, 117);
-	border-radius: 5%;
+	border-radius: 30%;
 	border-color: rgb(209, 174, 119);
 	color:white;
 	font-weight: bold;
 	font-family: 'arial-black';
 }
-
-.closebtn {
+.carousel-control-prev,  .carousel-control-next {
+	background-color:rgb(149,114,117);
+	color:white;
+	border-radius: 40%;
+	height:120px;
+	width: 35px;
+	margin-top:300px;
+}
+.carousel-control-prev{
+	margin-left:12%;
+}
+.carousel-control-next{
+	margin-right:12%;
+}
+.closebtn{
 	font-size: 20px;
 	cursor: pointer;
 	border-radius: 30%;

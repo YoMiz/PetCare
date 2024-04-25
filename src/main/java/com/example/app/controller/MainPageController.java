@@ -126,11 +126,20 @@ public class MainPageController {
 	}
 
 	@PostMapping("/addInventory")
-	public String addInventory(@ModelAttribute InventoryData inventoryAddData, HttpSession session) throws Exception {
+	public String addInventory(@ModelAttribute InventoryData inventoryAddData, @RequestParam List<Integer> petIdList,
+			HttpSession session) throws Exception {
 		User user = (User) session.getAttribute("user");
 		Integer userId = user.getUserId();
 		//inventoryに追加した際に、inventoryIdを取得する。
-		inventoryService.addToInventory(userId, inventoryAddData);
+		Integer inventoryId = inventoryService.addToInventory(userId, inventoryAddData);
+		//inventoryAddDataにinventoryIdを入力
+		inventoryAddData.setInventoryId(inventoryId);
+		//petId毎にpetIdをセットし、pet_inventoryに登録する
+		for (Integer petId : petIdList) {
+			System.out.println(petId);
+			inventoryAddData.setPetId(petId);
+			inventoryMapper.addPetInventory(inventoryAddData);
+		}
 		return "redirect:/main";
 	}
 
@@ -156,7 +165,7 @@ public class MainPageController {
 			}
 		}
 		//登録されている場合は、activate(0→1)する。
-		inventoryMapper.updateInventory(selectedInventoryData);
+		inventoryMapper.updateInventory(selectedInventoryData.getInventoryId());
 		return "redirect:/main";
 	}
 
@@ -167,6 +176,7 @@ public class MainPageController {
 	    InventoryData selectedInventoryData = inventoryMapper.getInventoryByInventoryId(selectedInventoryId);
 	    return selectedInventoryData;
 	}
+	
 	//Ajaxにてボタン押下後、pet_inventoryに記録されている且つ、
 	//activeが１の場合、
 	//html上のチェックボックスにチェックを入れる。
