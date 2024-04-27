@@ -127,20 +127,22 @@ public class MainPageController {
 
 	@PostMapping("/addInventory")
 	public String addInventory(@ModelAttribute InventoryData inventoryAddData, @RequestParam List<Integer> petIdList,
-			HttpSession session) throws Exception {
-		User user = (User) session.getAttribute("user");
-		Integer userId = user.getUserId();
-		//inventoryに追加した際に、inventoryIdを取得する。
-		Integer inventoryId = inventoryService.addToInventory(userId, inventoryAddData);
-		//inventoryAddDataにinventoryIdを入力
-		inventoryAddData.setInventoryId(inventoryId);
-		//petId毎にpetIdをセットし、pet_inventoryに登録する
-		for (Integer petId : petIdList) {
-			System.out.println(petId);
-			inventoryAddData.setPetId(petId);
-			inventoryMapper.addPetInventory(inventoryAddData);
-		}
-		return "redirect:/main";
+	        HttpSession session) throws Exception {
+	    User user = (User) session.getAttribute("user");
+	    Integer userId = user.getUserId();
+
+	    inventoryAddData.setUserId(userId);
+	    inventoryMapper.addInventory(inventoryAddData);
+	    Integer inventoryId = inventoryAddData.getInventoryId();
+
+	    System.out.println("inventory id:" + inventoryId);
+	    for (Integer petId : petIdList) {
+	        System.out.println(petId);
+	        inventoryAddData.setPetId(petId);
+	        inventoryMapper.addPetInventory(inventoryAddData);
+	    }
+
+	    return "redirect:/main";
 	}
 
 	@PostMapping("/updateInventory")
