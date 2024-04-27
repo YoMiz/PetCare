@@ -36,8 +36,7 @@
 		useGeneratedKeys="true" keyProperty="inventoryId">
 		INSERT INTO pet_care_db.inventory
 		(user_id, inventory_type, inventory_name,
-		inventory_amount,
-		inventory_price, inventory_url)
+		inventory_amount, inventory_price, inventory_url)
 		VALUE
 		(#{userId}, #{inventoryType},
 		#{inventoryName}, #{inventoryAmount},

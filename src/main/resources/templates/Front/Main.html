@@ -21,7 +21,7 @@
 							<td><input type="text" th:field="*{inventoryName}" /></td>
 						</tr>
 						<tr>
-							<td><input type="radio" th:field="*{inventoryType}" value="1" />フード</td>
+							<td><input type="radio" th:field="*{inventoryType}" value="1" checked/>フード</td>
 						</tr>
 						<tr>
 							<td><input type="radio" th:field="*{inventoryType}" value="2" />雑貨</td>
@@ -45,7 +45,7 @@
 								<label th:for="'pet-' + ${pet.petName}" th:text="${pet.petName}"></label>
 							</td>
 						</tr>
-						<input type="submit" value="追加"/>
+						<input type="submit" value="追加" />
 					</div>
 				</table>
 			</form>
