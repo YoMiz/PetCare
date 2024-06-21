@@ -27,27 +27,31 @@
 		SELECT *
 		FROM inventory
 		JOIN inventory_type
-		ON inventory.inventory_type =
+		ON
+		inventory.inventory_type =
 		inventory_type.inventory_type_id
-		WHERE inventory.inventory_id = #{inventoryId}
+		WHERE
+		inventory.inventory_id = #{inventoryId}
 	</select>
 	<insert id="addInventory"
 		parameterType="com.example.app.domain.InventoryData"
 		useGeneratedKeys="true" keyProperty="inventoryId">
 		INSERT INTO pet_care_db.inventory
 		(user_id, inventory_type, inventory_name,
-		inventory_amount, inventory_price, inventory_url)
+		inventory_amount,
+		inventory_price, inventory_url)
 		VALUE
 		(#{userId}, #{inventoryType},
 		#{inventoryName}, #{inventoryAmount},
 		#{inventoryPrice},
 		#{inventoryUrl})
 	</insert>
-	<insert id="addPetInventory"
+	<insert id="addInventoryPet"
 		parameterType="com.example.app.domain.InventoryData">
 		INSERT INTO pet_care_db.pet_inventory(user_id, pet_id,
-		inventory_id)
-		VALUE (#{userId}, #{petId}, #{inventoryId})
+		inventory_id, status)
+		VALUE (#{userId}, #{petId}, #{inventoryId},
+		#{inventoryPetStatus})
 	</insert>
 	<select id="showPetByInventoryId" parameterType="Integer">
 		SELECT * FROM
@@ -61,14 +65,14 @@
 		#{inventoryName},#{inventoryAmount},#{inventoryPrice}) WHERE
 		inventory.inventory_id = #{inventoryId}
 	</update>
-	<select id="findPetInventoryByUserId" parameterType="Integer">
+	<select id="findinventoryPetByUserId" parameterType="Integer">
 		SELECT CASE
 		WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END
 		FROM pet_inventory
 		WHERE
 		user_id = #{userId}
 	</select>
-	<select id="findPetInventoryByPetId" parameterType="Integer">
+	<select id="findinventoryPetByPetId" parameterType="Integer">
 		SELECT CASE
 		WHEN COUNT(*) > 0 THEN 'true' ELSE 'false' END
 		FROM
@@ -84,4 +88,17 @@
 		pet_inventory.inventory_id =
 		#{inventoryId}
 	</select>
+	<update id="updateInventoryPetByInventoryIdAndPetId"
+		parameterType="com.example.app.domain.InventoryData">
+		UPDATE pet_care_db.pet_inventory
+		SET status =
+		#{inventoryPetStatus}
+		WHERE inventory_id = #{inventoryId} AND pet_id =
+		#{petId}
+	</update>
+	<select id="getInventoryByPetId" resultType="com.example.app.domain.InventoryData">
+		SELECT * FROM pet_inventory 
+		JOIN inventory ON inventory.inventory_id = pet_inventory.inventory_id
+		WHERE pet_id = #{petId}
+	</select>	
 </mapper>

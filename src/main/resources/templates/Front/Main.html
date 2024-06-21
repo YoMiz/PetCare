@@ -21,7 +21,7 @@
 							<td><input type="text" th:field="*{inventoryName}" /></td>
 						</tr>
 						<tr>
-							<td><input type="radio" th:field="*{inventoryType}" value="1" checked/>フード</td>
+							<td><input type="radio" th:field="*{inventoryType}" value="1" checked />フード</td>
 						</tr>
 						<tr>
 							<td><input type="radio" th:field="*{inventoryType}" value="2" />雑貨</td>
@@ -40,8 +40,8 @@
 						</tr>
 						<tr th:each="pet : ${petList}">
 							<td>
-								<input type="checkbox" th:id="'pet-' + ${pet.petName}" th:name="petIdList"
-									th:value="${pet.petId}" />
+								<input type="checkbox" th:id="'pet-' + ${pet.petName}"
+									th:name="inventoryPetActiveIdList" th:value="${pet.petId}" />
 								<label th:for="'pet-' + ${pet.petName}" th:text="${pet.petName}"></label>
 							</td>
 						</tr>
@@ -85,12 +85,12 @@
 						</tr>
 						<tr th:each="pet : ${petList}">
 							<td>
-								<input type="checkbox" th:id="'pet-' + ${pet.petName}" th:name="petIdList"
-									th:value="${pet.petId}" />
+								<input type="checkbox" th:id="'pet-' + ${pet.petName}"
+									th:name="inventoryPetActiveIdList" th:value="${pet.petId}" />
 								<label th:for="'pet-' + ${pet.petName}" th:text="${pet.petName}"></label>
 							</td>
 						</tr>
-					</div>
+
 				</table>
 				<input type="submit" value="更新" />
 			</form>
@@ -144,7 +144,7 @@
 						<th></th>
 					</tr>
 				</thead>
-				<tbody th:each="inventory : ${petInventoryMap[petData.petId]}">
+				<tbody th:each="inventory : ${inventoryPetMap[petData.petId]}">
 					<tr>
 						<td>
 							<input type="hidden" class="inventoryId" th:value="${inventory.inventoryId}" />
@@ -208,7 +208,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script>
 			$(document).ready(function () {
-				var checkboxes = document.querySelectorAll('input[name=petIdList]');
+				var checkboxes = document.querySelectorAll('input[name=inventoryPetActiveIdList]');
 				var petAll = document.getElementById('pet-All');
 
 				window.openNav = function (menuType, event) {
@@ -247,6 +247,9 @@
 									if (!checkboxes[i].checked) {
 										allChecked = false;
 									}
+								} else {
+									// リストにないペットIDの場合はチェックを外す
+									checkboxes[i].checked = false;
 								}
 							}
 							document.getElementById('pet-All').checked = allChecked;

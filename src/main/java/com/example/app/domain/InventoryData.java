@@ -17,6 +17,8 @@ public class InventoryData {
 	Integer inventoryAmount;
 	Integer inventoryPrice;
 	String inventoryUrl;
-	Integer petInventoryId;
+	Integer inventoryPetId;
+	Integer inventoryPetStatus;
+	
 	
 }
